@@ -4,12 +4,41 @@
 
 @layer base {
   :root {
-    --background: 222 47% 11%;
-    --foreground: 0 0% 100%;
+    /* KeySingularity Brand Colors - from https://www.keysingularity.com/casi.php */
+    --background: 222 47% 8%; /* #0D121C - main dark background */
+    --foreground: 0 0% 100%; /* #ffffff - white text */
+
+    --card: 0 0% 12%; /* rgba(30, 30, 30, 0.9) approximation */
+    --card-foreground: 0 0% 100%; /* #ffffff */
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 48 96% 53%; /* #facc15 - KeySingularity true yellow */
+    --primary-foreground: 0 0% 0%; /* #000000 - black text on yellow */
+
+    --secondary: 220 26% 14%; /* #1a202c - secondary dark background */
+    --secondary-foreground: 220 9% 82%; /* #d1d5db - gray-300 */
+
+    --muted: 220 26% 14%; /* #1a202c */
+    --muted-foreground: 220 9% 64%; /* #9ca3af - gray-400 */
+
+    --accent: 38 92% 50%; /* #f59e0b - hover/focus state */
+    --accent-foreground: 0 0% 0%; /* #000000 */
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 19% 27%; /* #374151 - gray-700 */
+    --input: 217 19% 27%; /* #374151 */
+    --ring: 38 92% 50%; /* #f59e0b - focus ring */
+
+    --radius: 0.5rem;
   }
 
   body {
     @apply bg-background text-foreground font-body;
+    background: radial-gradient(ellipse at top, #1a202c 0%, #0d121c 50%);
   }
 
   h1,
@@ -19,5 +48,22 @@
   h5,
   h6 {
     @apply font-heading;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  h1 {
+    @apply text-page-title-mobile md:text-page-title-desktop;
+  }
+}
+
+@layer components {
+  .button-primary {
+    @apply bg-primary hover:bg-accent active:bg-[#d97706] text-primary-foreground;
+  }
+
+  .card-dark {
+    @apply bg-card border border-border;
+    background: rgba(30, 30, 30, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }

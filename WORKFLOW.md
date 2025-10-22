@@ -16,35 +16,17 @@ Simplified workflow for 6-8 hour technical assessment with heavy emphasis on AI 
 
 ## Session Start Prompt Template
 
-Copy and paste this prompt when starting a new task or session:
+Copy and paste this when starting a new session:
 
 ```
-I'm working on the AI Interview Dashboard technical assessment. We need to follow the workflow defined in WORKFLOW.md.
+I'm working on the AI Interview Dashboard.
 
-CRITICAL INSTRUCTIONS:
-1. Create a TodoWrite with these workflow steps:
-   - Check next task (task-master next)
-   - Develop feature with Claude
-   - Get review before saving (show code first)
-   - Save code after approval
-   - Validate implementation
-   - Run tests (if needed)
-   - Get final approval
-   - Run quality checks (lint, build)
-   - Document in CLAUDE_CODE.md
-   - Update Task Master
-   - Update DEVELOPMENT.md summary
-   - Commit changes
-   - Loop (clear context, next task)
+1. Check next/in-progress task: task-master next
+2. Confirm you've read WORKFLOW.md
+3. Show TodoWrite with all workflow steps (1-13) for my approval
+4. Then proceed with the task
 
-2. Use `task-master next` to identify the next task (or continue in_progress task)
-3. ALWAYS show code before saving and wait for approval
-4. Update CLAUDE_CODE.md throughout development
-5. Reference CLAUDE.md for tech stack and patterns
-6. Reference docs/requirements/technical-task-requirements.md for detailed requirements
-7. Reference docs/requirements/PRD.md for feature specifications
-
-Let's start by checking the next task with task-master.
+Let's start!
 ```
 
 ---
@@ -73,7 +55,6 @@ task-master set-status --id=<id> --status=in_progress
   - Claude will ask if new dependencies should be documented
 - Ask Claude for implementation
 - Reference PRD for exact requirements
-- Claude will ask if interaction is significant enough to document
 
 ### Step 3: Review Before Save ⚠️
 **CRITICAL**: Show generated code to user BEFORE saving
@@ -117,11 +98,11 @@ npm run build       # Build check
 - Fix any issues found
 
 ### Step 9: Documentation Check
+- Claude will ask if interaction is significant enough to document in CLAUDE_CODE_LOG.md
 **Before commit only**: Claude will ask "Ready to update CLAUDE_CODE.md summary?"
 - Review significant interactions from this task
 - Update appropriate sections (1-8) in CLAUDE_CODE.md
 - Quick summary, not detailed verbatim
-- CLAUDE_CODE_LOG.md updated during development (when asked)
 
 ### Step 10: Update Task Master
 ```bash
@@ -129,7 +110,7 @@ task-master set-status --id=<id> --status=completed
 ```
 
 ### Step 11: Update DEVELOPMENT.md
-**Before commit**: Summarize progress in DEVELOPMENT.md
+**Before commit only**: Summarize progress in DEVELOPMENT.md
 - Update development approach section
 - Add time spent on this feature
 - Note key decisions made
@@ -181,6 +162,26 @@ Then paste the prompt to continue with the next task.
 **Time Saved**: ~X minutes
 **Effectiveness**: X/10
 ```
+
+---
+
+## Key Reference Files
+
+**Required Reading:**
+- `WORKFLOW.md` (this file) - Step-by-step development process
+- `CLAUDE.md` - Tech stack, patterns, brand colors, project context
+- `docs/requirements/PRD.md` - Feature specifications and requirements
+- `docs/requirements/technical-task-requirements.md` - Evaluation criteria (30% is documentation!)
+
+**Documentation:**
+- `CLAUDE_CODE_LOG.md` - Chronological log (append as you go)
+- `CLAUDE_CODE.md` - 8-section organized summary (update before commits)
+- `DEVELOPMENT.md` - Process summary (update before commits)
+
+**Task Management:**
+- `.taskmaster/tasks/tasks.json` - Task database
+- `task-master next` - Get next available task
+- `task-master show <id>` - View task details
 
 ---
 
