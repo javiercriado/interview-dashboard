@@ -26,12 +26,12 @@ CRITICAL INSTRUCTIONS:
    - Check next task (task-master next)
    - Develop feature with Claude
    - Get review before saving (show code first)
-   - Document in CLAUDE_CODE.md
    - Save code after approval
    - Validate implementation
    - Run tests (if needed)
    - Get final approval
    - Run quality checks (lint, build)
+   - Document in CLAUDE_CODE.md
    - Update Task Master
    - Update DEVELOPMENT.md summary
    - Commit changes
@@ -67,9 +67,13 @@ task-master set-status --id=<id> --status=in_progress
 ```
 
 ### Step 2: Develop with Claude
+- **Check Dependencies First**: Review `docs/requirements/PRD.md` (lines 14-23) for required tech stack
+  - Install dependencies ONLY if needed for current feature
+  - Example: TanStack Table for interview list, React Hook Form for candidate forms
+  - Claude will ask if new dependencies should be documented
 - Ask Claude for implementation
 - Reference PRD for exact requirements
-- **Document prompt in CLAUDE_CODE.md immediately**
+- Claude will ask if interaction is significant enough to document
 
 ### Step 3: Review Before Save ⚠️
 **CRITICAL**: Show generated code to user BEFORE saving
@@ -111,28 +115,34 @@ npm run type-check  # TypeScript
 npm run build       # Build check
 ```
 - Fix any issues found
-- Document fixes in CLAUDE_CODE.md
 
-### Step 9: Update Task Master
+### Step 9: Documentation Check
+**Before commit only**: Claude will ask "Ready to update CLAUDE_CODE.md summary?"
+- Review significant interactions from this task
+- Update appropriate sections (1-8) in CLAUDE_CODE.md
+- Quick summary, not detailed verbatim
+- CLAUDE_CODE_LOG.md updated during development (when asked)
+
+### Step 10: Update Task Master
 ```bash
 task-master set-status --id=<id> --status=completed
 ```
 
-### Step 10: Update DEVELOPMENT.md
+### Step 11: Update DEVELOPMENT.md
 **Before commit**: Summarize progress in DEVELOPMENT.md
 - Update development approach section
 - Add time spent on this feature
 - Note key decisions made
 - Summarize Claude Code effectiveness
 
-### Step 11: Commit
+### Step 12: Commit
 ```bash
 git add .
 git commit -m "feat: [feature name]"
 ```
 - Use conventional commit format
 
-### Step 12: Loop
+### Step 13: Loop
 ```
 Please copy the session start prompt and use /clear to reset context.
 Then paste the prompt to continue with the next task.

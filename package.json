@@ -1,6 +1,19 @@
 {
+  "name": "interview-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:frontend\"",
+    "dev:api": "cd api && npm start",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "concurrently \"npm run dev:api\" \"cd frontend && npm start\""
+  },
   "dependencies": {
     "@anthropic-ai/claude-code": "^2.0.25",
     "task-master-ai": "^0.30.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
   }
 }
