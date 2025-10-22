@@ -1,0 +1,109 @@
+{
+	"meta": {
+		"generatedAt": "2025-10-22T19:57:09.675Z",
+		"tasksAnalyzed": 12,
+		"totalTasks": 12,
+		"analysisCount": 12,
+		"thresholdScore": 5,
+		"projectName": "Task Master",
+		"usedResearch": false
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 1,
+			"taskTitle": "Initialize Project Structure and Setup",
+			"complexityScore": 4,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down the project initialization into: 1) Create directory structure (api/, frontend/), 2) Initialize Next.js 14 app with TypeScript in frontend/, 3) Set up Express API server in api/, 4) Configure package.json scripts and dependencies, 5) Set up concurrent development workflow",
+			"reasoning": "Moderate complexity for greenfield setup. Involves multiple technologies (Next.js, Express) but follows standard patterns. Well-documented requirements make this straightforward."
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "Configure Design System and UI Foundation",
+			"complexityScore": 3,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Split into: 1) Configure Tailwind CSS with KeySingularity brand colors, 2) Install and initialize shadcn/ui, 3) Set up custom fonts (IBM Plex Mono, Open Sans), 4) Create base layout component with dark theme",
+			"reasoning": "Low-medium complexity. shadcn/ui is well-documented and Tailwind configuration is standard. Brand colors are clearly specified."
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "Setup Data Layer and State Management",
+			"complexityScore": 5,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Organize into: 1) Install and configure TanStack Query, 2) Set up React Hook Form + Zod validation, 3) Create API client functions for all endpoints, 4) Build typed API interfaces, 5) Create custom hooks for each endpoint, 6) Set up React context for global state",
+			"reasoning": "Medium complexity. Multiple libraries to integrate with proper TypeScript typing. Foundation for all other features, so needs to be robust."
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "Implement Interview List View with Filtering",
+			"complexityScore": 6,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Break into: 1) Install and configure TanStack Table, 2) Create basic InterviewList component with columns, 3) Implement date range picker filter, 4) Add position and status dropdown filters, 5) Build debounced search functionality, 6) Add column sorting, 7) Implement navigation to detail view with loading states",
+			"reasoning": "Medium-high complexity. TanStack Table v8 has learning curve, multiple filter types need coordination, debouncing requires careful implementation."
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "Build Interview Detail View with Charts",
+			"complexityScore": 5,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Split into: 1) Install Recharts and create InterviewDetail component, 2) Build competency breakdown radar chart with brand styling, 3) Implement transcript display with formatting, 4) Create mock audio player UI, 5) Add notes functionality with localStorage persistence",
+			"reasoning": "Medium complexity. Recharts integration straightforward, localStorage persistence simple, but chart customization with brand colors requires attention."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "Create Analytics Dashboard with Key Metrics",
+			"complexityScore": 6,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Organize into: 1) Create metrics calculation functions, 2) Build key metrics cards component, 3) Implement funnel visualization chart, 4) Create position breakdown bar chart, 5) Build recommendation distribution pie chart, 6) Add recent interviews list with responsive design",
+			"reasoning": "Medium-high complexity. Multiple chart types with Recharts, complex data aggregations needed, responsive design considerations for mobile."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "Implement Candidate Management CRUD Operations",
+			"complexityScore": 7,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "Break down into: 1) Create CandidateList component with TanStack Table, 2) Build CandidateForm with React Hook Form + Zod validation, 3) Implement form field validation logic, 4) Create CandidateDetail view, 5) Build status workflow UI components, 6) Implement CRUD API integration, 7) Add filtering and search functionality, 8) Create simulated email invitation feature",
+			"reasoning": "High complexity. Full CRUD operations, complex form validation, status workflow state management, multiple interconnected components."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "Build CSV Bulk Upload Feature",
+			"complexityScore": 5,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Split into: 1) Install Papa Parse and create drag & drop upload component, 2) Implement CSV parsing and preview table, 3) Build row-level validation with error indicators, 4) Create import progress tracking, 5) Display import results summary with success/error reporting",
+			"reasoning": "Medium complexity. File handling and CSV parsing are standard patterns, but validation and error handling across large datasets requires careful implementation."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "Create Interview Template Management System",
+			"complexityScore": 6,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Organize into: 1) Create TemplateList component with card layout, 2) Build template CRUD operations (create, duplicate, delete), 3) Implement TemplateForm for basic template fields, 4) Add dynamic question management, 5) Create competency assignment functionality, 6) Build template preview mode",
+			"reasoning": "Medium-high complexity. Dynamic form management, nested data structures for questions/competencies, preview functionality requires state management."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "Implement Advanced Template Builder Features",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Break into: 1) Install @dnd-kit/sortable for drag-and-drop, 2) Implement React Hook Form field arrays for dynamic questions, 3) Build follow-up questions management, 4) Add question type selection and required/optional toggles, 5) Create drag-and-drop question reordering, 6) Implement rich text editor for question content, 7) Ensure complex form state persistence during interactions",
+			"reasoning": "High complexity. Drag-and-drop implementation, complex nested form arrays, state management for dynamic content, rich text editing integration."
+		},
+		{
+			"taskId": 11,
+			"taskTitle": "Add Export and Additional Features",
+			"complexityScore": 4,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Split into: 1) Install csv-writer and implement CSV export functionality, 2) Create comprehensive loading skeleton components, 3) Build empty state components for all list views, 4) Implement responsive design improvements and mobile optimization, 5) Add error boundaries and toast notifications using shadcn/ui",
+			"reasoning": "Medium complexity. Multiple smaller features that are individually straightforward but require consistency across the application."
+		},
+		{
+			"taskId": 12,
+			"taskTitle": "Testing, Documentation, and Deployment",
+			"complexityScore": 7,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "Organize into: 1) Setup Vitest and @testing-library/react, 2) Write form validation tests, 3) Create API integration tests, 4) Build component rendering tests, 5) Add user interaction tests, 6) Configure Biome linting, 7) Complete comprehensive CLAUDE_CODE.md documentation, 8) Deploy to Vercel with environment setup",
+			"reasoning": "High complexity. Testing setup from scratch, multiple test types, comprehensive documentation requirements (30% of grade), deployment configuration. Critical for project success."
+		}
+	]
+}

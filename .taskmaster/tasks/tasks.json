@@ -1,0 +1,800 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Initialize Project Structure and Setup",
+        "description": "Create the required project folder structure with api/ and frontend/ directories, initialize Next.js app with TypeScript",
+        "details": "Create api/ folder with Express server setup, create frontend/ folder with Next.js 14 App Router + TypeScript. Install dependencies: @next/font, tailwindcss, @headlessui/react. Copy mock API server from technical requirements. Configure package.json scripts for both frontend and api. Setup concurrent development script to run both servers.",
+        "testStrategy": "Verify both frontend (port 3000) and api (port 3001) servers start successfully and serve basic responses",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Configure Design System and UI Foundation",
+        "description": "Setup Tailwind CSS with KeySingularity brand colors, install and configure shadcn/ui components",
+        "details": "Configure tailwind.config.js with KeySingularity colors (primary: #facc15, background: #0D121C, foreground: #f8fafc). Install shadcn/ui CLI and initialize. Setup custom fonts (IBM Plex Mono for headers, Open Sans for body). Install Lucide React icons. Create layout component with dark theme by default. Setup global CSS with brand typography.",
+        "testStrategy": "Verify brand colors render correctly, fonts load properly, and shadcn/ui components integrate without errors",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Setup Data Layer and State Management",
+        "description": "Install and configure TanStack Query for API calls, React Hook Form + Zod for forms, implement basic API client",
+        "details": "Install @tanstack/react-query, react-hook-form, zod, @hookform/resolvers. Create QueryClient setup with error handling and caching. Build API client functions for all endpoints (/api/interviews, /api/candidates, /api/interview-templates, /api/analytics). Setup React context for global state. Create custom hooks for each API endpoint with proper TypeScript types.",
+        "testStrategy": "Test API client connects to mock server, TanStack Query caching works, form validation with Zod schemas functions correctly",
+        "priority": "high",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install and configure TanStack Query",
+            "description": "Install TanStack Query dependencies and set up QueryClient with proper configuration",
+            "dependencies": [],
+            "details": "Install @tanstack/react-query package. Create QueryClient instance with error handling, retry logic, and caching configuration. Set up QueryClientProvider in app root. Configure default query options for staleTime, cacheTime, and retry behavior.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Set up React Hook Form + Zod validation",
+            "description": "Install and configure React Hook Form with Zod for form validation",
+            "dependencies": [],
+            "details": "Install react-hook-form, zod, and @hookform/resolvers packages. Create base Zod schemas for candidate, interview, and template forms. Set up useForm hooks with zodResolver integration. Create reusable form components with proper TypeScript typing.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create API client functions for all endpoints",
+            "description": "Build API client with functions for interviews, candidates, templates, and analytics endpoints",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Create api/client.ts with base fetch configuration. Implement functions for /api/interviews, /api/candidates, /api/interview-templates, /api/analytics endpoints. Add error handling, request/response interceptors, and proper HTTP methods (GET, POST, PUT, DELETE).",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Build typed API interfaces",
+            "description": "Create TypeScript interfaces for all API data models and responses",
+            "dependencies": [],
+            "details": "Define TypeScript interfaces for Interview, Candidate, Template, Analytics data models. Create API response types with proper error handling types. Export all types from centralized types/api.ts file for consistent usage across components.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create custom hooks for each endpoint",
+            "description": "Build custom React hooks using TanStack Query for each API endpoint",
+            "dependencies": [
+              "3.3",
+              "3.4"
+            ],
+            "details": "Create useInterviews, useCandidates, useTemplates, useAnalytics hooks using useQuery. Implement useMutation hooks for create, update, delete operations. Add proper TypeScript typing, loading states, error handling, and cache invalidation strategies.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Set up React context for global state",
+            "description": "Create React context for managing global application state",
+            "dependencies": [
+              "3.2"
+            ],
+            "details": "Create AppContext with useContext hook for global state management. Include user preferences, filter states, and form data persistence. Set up context provider in app root. Create custom hooks for accessing and updating global state with proper TypeScript typing.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Implement Interview List View with Filtering",
+        "description": "Create interview dashboard with TanStack Table, filters, search, and navigation to detail view",
+        "details": "Install @tanstack/react-table. Create InterviewList component with columns: candidate name, position, date, score, status, recommendation. Implement date range picker, position dropdown filter, status dropdown filter. Add debounced search bar using useDeferredValue. Enable column sorting. Add row click navigation to detail view. Include loading skeletons and error states.",
+        "testStrategy": "Test all filters work independently and in combination, search performs with debouncing, sorting functions on all columns, navigation works correctly",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install and configure TanStack Table dependencies",
+            "description": "Install @tanstack/react-table and configure basic setup for data table functionality",
+            "dependencies": [],
+            "details": "Run npm install @tanstack/react-table. Create basic table configuration and import necessary types. Set up initial table structure with proper TypeScript types for Interview data model.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Create basic InterviewList component with columns",
+            "description": "Build the core InterviewList component with all required table columns and basic data display",
+            "dependencies": [
+              "4.1"
+            ],
+            "details": "Create InterviewList component using TanStack Table. Define column definitions for candidate name, position, date, score, status, and recommendation. Implement basic data fetching and table rendering with proper TypeScript interfaces.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement date range picker filter",
+            "description": "Add date range filtering functionality with shadcn/ui date picker components",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Create DateRangePicker component using shadcn/ui calendar components. Integrate with table filtering system to filter interviews by date range. Handle date formatting and validation properly.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Add position and status dropdown filters",
+            "description": "Implement dropdown filters for position and status with multi-select capabilities",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Create FilterDropdown components for position and status filtering. Use shadcn/ui Select components. Implement multi-select functionality and integrate with table filtering system. Extract unique values from data for filter options.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Build debounced search functionality",
+            "description": "Create search input with proper debouncing using useDeferredValue for performance",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Implement SearchInput component with debounced search using useDeferredValue hook. Search across candidate name, position, and other relevant fields. Integrate with table filtering system and add proper loading states during search.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Add column sorting capabilities",
+            "description": "Enable sorting functionality for all table columns with visual indicators",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Implement column sorting using TanStack Table sorting features. Add sort indicators (arrows) to column headers. Enable multi-column sorting with proper sort state management. Include sort direction toggle functionality.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Implement navigation to detail view with loading states",
+            "description": "Add row click navigation to interview details with proper loading and error states",
+            "dependencies": [
+              "4.6"
+            ],
+            "details": "Implement row click handlers to navigate to interview detail view using Next.js router. Add loading skeletons for table data loading. Create error states for failed data fetching. Include hover states and cursor pointer for interactive rows.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Build Interview Detail View with Charts",
+        "description": "Create detailed interview view with competency breakdown, transcript display, and simulated audio player",
+        "details": "Install recharts for visualization. Create InterviewDetail component displaying full interview data. Build competency breakdown radar chart with brand colors. Add transcript display with readable formatting. Create mock audio player UI with play/pause controls. Implement notes textarea with local state persistence using localStorage. Add back navigation to interview list.",
+        "testStrategy": "Verify chart renders with correct data and brand styling, notes persist across page refreshes, all interview data displays correctly",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Recharts and create InterviewDetail component structure",
+            "description": "Set up Recharts library and create the base InterviewDetail component with routing and data fetching",
+            "dependencies": [],
+            "details": "Install recharts package. Create InterviewDetail component in appropriate directory. Set up dynamic routing to accept interview ID parameter. Implement data fetching for single interview using TanStack Query. Create basic component structure with loading and error states. Add back navigation button to interview list.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Build competency breakdown radar chart with brand styling",
+            "description": "Implement radar chart visualization for interview competency scores using Recharts with KeySingularity brand colors",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Create competency radar chart using Recharts RadarChart component. Configure chart with KeySingularity brand colors (#facc15 primary, #0D121C background). Map interview competency data to chart format. Customize chart styling with proper font families (IBM Plex Mono). Ensure chart is responsive and displays competency names and scores clearly.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement transcript display with readable formatting",
+            "description": "Create transcript section with proper formatting, syntax highlighting, and responsive design",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Build transcript display component with clean, readable formatting. Handle line breaks and speaker identification. Apply proper typography using Open Sans font family. Implement scrollable container with custom scrollbar styling. Add search functionality within transcript (optional enhancement). Ensure mobile-responsive design with proper text sizing.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create mock audio player UI with controls",
+            "description": "Build simulated audio player interface with play/pause controls and progress indicators",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Create audio player component with play/pause button, progress bar, and time indicators. Implement mock functionality that simulates audio playback without actual audio files. Use Lucide React icons for player controls. Style with KeySingularity brand colors and ensure responsive design. Add volume control and playback speed options for realistic feel.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Add notes functionality with localStorage persistence",
+            "description": "Implement notes textarea with automatic saving to localStorage and retrieval on component mount",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Create notes textarea component with auto-expanding height. Implement localStorage persistence using useEffect hooks for save/load operations. Add debounced auto-save functionality to prevent excessive localStorage writes. Include visual indicators for save status. Ensure notes are keyed by interview ID for proper isolation. Add character count and formatting helpers.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Create Analytics Dashboard with Key Metrics",
+        "description": "Build analytics overview with metrics cards, charts, and funnel visualization using Recharts",
+        "details": "Create Analytics component with key metrics cards (total interviews, completion rate, average score). Build funnel visualization chart (invited → started → completed). Add position breakdown bar chart and recommendation distribution pie chart. Create recent interviews list component. Use Recharts with KeySingularity brand colors. Implement responsive design for mobile viewing.",
+        "testStrategy": "Verify all metrics calculate correctly from API data, charts render responsively on different screen sizes, data updates when API changes",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create metrics calculation functions",
+            "description": "Implement utility functions to calculate key analytics metrics from interview data",
+            "dependencies": [],
+            "details": "Create calculateMetrics utility function that takes interview data and returns total interviews, completion rate, average score, and funnel conversion rates. Implement separate functions for position breakdown aggregation and recommendation distribution counting. Add TypeScript types for metrics data structures. Handle edge cases like empty data sets or missing fields.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Build key metrics cards component",
+            "description": "Create responsive cards displaying total interviews, completion rate, and average score",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Build MetricsCard component using shadcn/ui Card component with KeySingularity styling. Create grid layout that adapts to mobile screens. Display metrics with proper formatting (percentages, decimals). Add loading skeletons and error states. Include trend indicators or comparison data if available from API.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement funnel visualization chart",
+            "description": "Create funnel chart showing interview flow from invited to completed using Recharts",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Build FunnelChart component using Recharts FunnelChart or custom bars. Display stages: invited → started → completed with conversion percentages. Apply KeySingularity brand colors (#facc15 primary, dark theme). Make chart responsive for mobile devices. Add tooltips showing exact numbers and percentages.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create position breakdown bar chart",
+            "description": "Build horizontal or vertical bar chart showing interview counts by job position",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Create PositionChart component using Recharts BarChart. Aggregate interview data by appliedFor field. Use KeySingularity yellow (#facc15) for bars with dark background. Make chart responsive and handle long position names with proper truncation. Add hover tooltips with full position names and counts.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Build recommendation distribution pie chart",
+            "description": "Create pie chart visualizing hire/maybe/no-hire recommendation breakdown",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Build RecommendationChart component using Recharts PieChart. Show distribution of recommendation field values (hire, maybe, no-hire). Use distinct colors within KeySingularity theme for each segment. Add percentage labels and legend. Include tooltips with counts and percentages. Handle empty or undefined recommendation values.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Add recent interviews list with responsive design",
+            "description": "Create compact list component showing most recent interviews with mobile-optimized layout",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Build RecentInterviewsList component displaying latest 5-10 interviews. Show candidate name, position, date, and score in compact format. Implement responsive design that stacks on mobile and flows horizontally on desktop. Add click navigation to interview detail view. Include loading states and empty state when no recent interviews exist.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement Candidate Management CRUD Operations",
+        "description": "Create candidate list, add/edit forms with validation, and candidate detail view with status workflow",
+        "details": "Create CandidateList component with TanStack Table (name, email, position, status, interview date). Build CandidateForm with React Hook Form + Zod validation (name, email, phone, position, source). Create CandidateDetail view with profile info, interview history, status updates. Implement status workflow UI (pending → invited → interviewed → hired/rejected). Add simulated email invitation functionality.",
+        "testStrategy": "Test form validation works for all fields, CRUD operations function correctly, status workflow updates properly, candidate filtering and search operate as expected",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create CandidateList component with TanStack Table",
+            "description": "Build the main candidate list view with table columns for name, email, position, status, and interview date",
+            "dependencies": [],
+            "details": "Create CandidateList component using TanStack Table with columns: name, email, position, status, interview date. Setup proper TypeScript types for candidate data. Include loading states and empty state handling. Add row click handlers for navigation to detail view.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Build CandidateForm with React Hook Form + Zod validation",
+            "description": "Create the candidate add/edit form with proper validation schema",
+            "dependencies": [],
+            "details": "Build CandidateForm component using React Hook Form. Create Zod schema for validation with fields: name (required, min 2 chars), email (required, valid email), phone (optional, valid format), position (required), source (optional). Setup form submission handling and error display.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement form field validation logic",
+            "description": "Add comprehensive validation rules and error handling for all form fields",
+            "dependencies": [
+              "7.2"
+            ],
+            "details": "Enhance form validation with real-time validation, custom error messages, field-specific validation rules. Add async validation for email uniqueness if needed. Implement form reset and dirty state management. Add validation feedback UI components.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create CandidateDetail view",
+            "description": "Build detailed candidate profile view with all candidate information and interview history",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Create CandidateDetail component displaying candidate profile information, contact details, application source, and interview history if any. Include breadcrumb navigation back to candidate list. Add edit candidate button linking to CandidateForm in edit mode.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Build status workflow UI components",
+            "description": "Implement status transition UI with workflow visualization",
+            "dependencies": [
+              "7.4"
+            ],
+            "details": "Create status workflow components showing candidate progression: pending → invited → interviewed → hired/rejected. Build status transition buttons with confirmation dialogs. Add visual workflow indicator showing current status and available next steps. Include status history with timestamps.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Implement CRUD API integration",
+            "description": "Connect all candidate components to API endpoints with proper error handling",
+            "dependencies": [
+              "7.2",
+              "7.4"
+            ],
+            "details": "Integrate TanStack Query mutations for create, update, delete candidate operations. Add proper error handling and success notifications. Implement optimistic updates for better UX. Setup cache invalidation after mutations. Add loading states during API operations.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Add filtering and search functionality",
+            "description": "Implement candidate list filtering by status and real-time search",
+            "dependencies": [
+              "7.1",
+              "7.6"
+            ],
+            "details": "Add status filter dropdown to CandidateList. Implement debounced search functionality across name, email, and position fields. Add clear filters button. Ensure filters work with API pagination. Include filter state in URL params for bookmarking.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "Create simulated email invitation feature",
+            "description": "Build email invitation functionality with mock email service",
+            "dependencies": [
+              "7.5"
+            ],
+            "details": "Create invitation modal/dialog with email template preview. Add send invitation button in candidate detail view. Implement mock email service that simulates sending invitations. Update candidate status to 'invited' after sending. Add invitation history tracking with timestamps.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Build CSV Bulk Upload Feature",
+        "description": "Implement drag & drop CSV upload with data preview, validation, and import functionality",
+        "details": "Create CsvUpload component with drag & drop area using HTML5 file API. Parse CSV files using Papa Parse library. Display preview table of parsed data with validation indicators. Validate required fields (name, email) and email format. Show per-row validation errors. Implement progress indicator for import process. Display import results summary with success/error counts.",
+        "testStrategy": "Test CSV parsing with various file formats, validation catches all error types, progress indicator updates correctly, import results match actual data created",
+        "priority": "medium",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Papa Parse and create drag & drop upload component",
+            "description": "Set up CSV parsing library and implement file drop zone UI component",
+            "dependencies": [],
+            "details": "Install Papa Parse library via npm. Create CsvUpload component with drag & drop area using HTML5 file API. Implement drop zone styling with visual feedback for drag over/drop states. Add file input fallback for browsers without drag support. Handle file selection and basic file type validation (CSV only).",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement CSV parsing and preview table",
+            "description": "Parse uploaded CSV files and display preview table with parsed data",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Use Papa Parse to read and parse CSV files. Create preview table component to display parsed data with proper column headers. Handle different CSV formats and delimiters. Implement table virtualization for large files. Add column mapping interface if headers don't match expected format.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Build row-level validation with error indicators",
+            "description": "Implement validation rules and display per-row validation errors",
+            "dependencies": [
+              "8.2"
+            ],
+            "details": "Create validation schema for required fields (name, email) and email format validation. Implement row-level validation checking against schema. Add visual error indicators to preview table rows with invalid data. Display validation error messages with specific field issues. Provide validation summary showing total errors found.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create import progress tracking",
+            "description": "Implement progress indicator and batch processing for large imports",
+            "dependencies": [
+              "8.3"
+            ],
+            "details": "Create progress bar component showing import completion percentage. Implement batch processing to handle large CSV files without blocking UI. Add cancel import functionality. Show current processing status (validating, importing, complete). Handle API rate limiting and retry logic for failed imports.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Display import results summary with success/error reporting",
+            "description": "Show detailed import results with success counts, errors, and next steps",
+            "dependencies": [
+              "8.4"
+            ],
+            "details": "Create import results component displaying total processed, successful imports, and failed records. Show detailed error list for failed imports with specific issues. Provide download link for error report CSV. Add success message with link to candidate list. Include option to retry failed imports after fixing data.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Create Interview Template Management System",
+        "description": "Build template list view with CRUD operations for interview templates",
+        "details": "Create TemplateList component displaying existing templates in card layout. Add create, duplicate, and delete template functionality. Build TemplateForm for creating/editing templates with template name, job position, duration fields. Implement dynamic question management with add/remove capabilities. Add competency assignment dropdown for each question. Include template preview mode to view final interview flow.",
+        "testStrategy": "Verify template CRUD operations work correctly, question management functions properly, competency assignments save correctly, preview mode displays accurate template structure",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create TemplateList component with card layout",
+            "description": "Build template list view component displaying existing templates in card format",
+            "dependencies": [],
+            "details": "Create TemplateList component that fetches templates from API and displays them in a responsive card grid layout. Each card should show template name, job position, duration, and number of questions. Use shadcn/ui Card components with KeySingularity brand styling. Include loading states and error handling.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement template CRUD operations",
+            "description": "Add create, duplicate, and delete functionality for interview templates",
+            "dependencies": [
+              "9.1"
+            ],
+            "details": "Implement template creation with API integration. Add duplicate template functionality that copies existing template data. Build delete confirmation modal with warning. Use TanStack Query for mutations with optimistic updates. Handle success/error states with toast notifications.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Build TemplateForm for basic template fields",
+            "description": "Create form component for template metadata (name, position, duration)",
+            "dependencies": [
+              "9.2"
+            ],
+            "details": "Build TemplateForm component using React Hook Form and Zod validation. Include fields for template name, job position dropdown, duration input, and description textarea. Implement form validation with proper error messages. Add save/cancel buttons with loading states.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Add dynamic question management",
+            "description": "Implement add/remove/reorder functionality for interview questions",
+            "dependencies": [
+              "9.3"
+            ],
+            "details": "Create dynamic question array management within TemplateForm. Implement add new question button, remove question functionality, and drag-to-reorder questions. Each question should have text input, type selection, and optional follow-up questions. Use react-hook-form's useFieldArray for state management.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create competency assignment functionality",
+            "description": "Add competency dropdown assignment for each interview question",
+            "dependencies": [
+              "9.4"
+            ],
+            "details": "Build competency assignment system for questions. Create competency dropdown component with search/filter capabilities. Allow multiple competencies per question. Fetch competencies from API and cache with TanStack Query. Display assigned competencies as badges on questions.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Build template preview mode",
+            "description": "Create preview component to view final interview flow before saving",
+            "dependencies": [
+              "9.5"
+            ],
+            "details": "Implement template preview mode that displays the complete interview flow. Show template metadata, questions in order, assigned competencies, and estimated duration. Include navigation between questions and back to edit mode. Style to match actual interview interface for accurate preview.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Implement Advanced Template Builder Features",
+        "description": "Add dynamic question management, follow-up questions, and question reordering to template builder",
+        "details": "Enhance TemplateBuilder with dynamic form arrays for questions using React Hook Form fieldArrays. Add follow-up questions management for each main question. Implement question type selection if applicable. Add required/optional question toggle. Include drag-and-drop question reordering using @dnd-kit/sortable library. Create rich text editor or enhanced textarea for question content.",
+        "testStrategy": "Test dynamic question addition/removal, follow-up questions save correctly, drag-and-drop reordering functions, form state persists during complex interactions",
+        "priority": "low",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install and configure @dnd-kit/sortable library",
+            "description": "Install @dnd-kit/sortable and @dnd-kit/core packages and set up drag-and-drop providers",
+            "dependencies": [],
+            "details": "Run npm install @dnd-kit/sortable @dnd-kit/core @dnd-kit/utilities. Set up DndContext provider in TemplateBuilder component. Configure collision detection and drag overlay components.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement React Hook Form field arrays for dynamic questions",
+            "description": "Set up useFieldArray hook for managing dynamic question list with add/remove functionality",
+            "dependencies": [
+              "10.1"
+            ],
+            "details": "Use useFieldArray from React Hook Form to manage questions array. Create add question button, remove question functionality. Ensure proper form validation for dynamic fields. Handle form state updates correctly.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Build follow-up questions management system",
+            "description": "Create nested form arrays for managing follow-up questions within each main question",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Implement nested useFieldArray for follow-up questions. Create UI for adding/removing follow-up questions. Build collapsible sections for follow-up management. Ensure proper validation and state handling for nested arrays.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Add question type selection and required/optional toggles",
+            "description": "Implement question type dropdown and required field toggle for each question",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Create question type selector (text, multiple choice, rating, etc.). Add required/optional toggle switch. Implement conditional validation based on question type. Update form schema to handle different question types.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create drag-and-drop question reordering functionality",
+            "description": "Implement sortable question list with drag-and-drop reordering using @dnd-kit",
+            "dependencies": [
+              "10.1",
+              "10.2"
+            ],
+            "details": "Create SortableContext for questions list. Implement SortableItem component for each question. Handle drag end events to reorder form array. Add visual drag indicators and smooth animations.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Implement rich text editor for question content",
+            "description": "Add enhanced text editing capabilities for question descriptions and content",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Install and configure a rich text editor (TinyMCE or similar lightweight option). Integrate with React Hook Form. Add formatting options (bold, italic, lists). Ensure editor content saves correctly in form state.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Ensure complex form state persistence during interactions",
+            "description": "Implement form state management to handle persistence during drag-and-drop and dynamic operations",
+            "dependencies": [
+              "10.3",
+              "10.4",
+              "10.5",
+              "10.6"
+            ],
+            "details": "Test and fix form state persistence during drag operations. Ensure field values persist when adding/removing questions. Implement proper form reset and validation. Add loading states for complex operations.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Add Export and Additional Features",
+        "description": "Implement CSV export for interview data, responsive design improvements, and loading states",
+        "details": "Add CSV export functionality to interview list using csv-writer library. Implement comprehensive loading skeletons for all async operations. Add empty states with helpful messages for all list views. Ensure full responsive design works on mobile devices. Add error boundaries for better error handling. Implement toast notifications for user actions using shadcn/ui toast component.",
+        "testStrategy": "Test CSV export contains correct data format, loading states display during API calls, responsive design functions on various screen sizes, error boundaries catch and display errors gracefully",
+        "priority": "low",
+        "dependencies": [
+          4,
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Testing, Documentation, and Deployment",
+        "description": "Implement Vitest tests for critical paths, finalize documentation, and deploy to Vercel",
+        "details": "Setup Vitest and @testing-library/react. Write tests for: form validation, API integration, component rendering, user interactions. Configure Biome for linting/formatting. Complete CLAUDE_CODE.md with comprehensive AI collaboration documentation. Update README.md with setup instructions. Prepare DEVELOPMENT.md with process documentation. Deploy to Vercel with environment configuration. Ensure 60% test coverage minimum.",
+        "testStrategy": "Verify test suite passes with adequate coverage, linting shows no errors, documentation is complete and accurate, deployment succeeds and application functions in production",
+        "priority": "high",
+        "dependencies": [
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Setup Vitest and @testing-library/react",
+            "description": "Configure testing framework and environment for React components",
+            "dependencies": [],
+            "details": "Install vitest, @testing-library/react, @testing-library/jest-dom, and jsdom. Configure vitest.config.ts with React testing environment. Setup test utilities and global test configuration. Create test setup file for testing-library configuration.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Write form validation tests",
+            "description": "Create comprehensive tests for all form validation logic",
+            "dependencies": [
+              "12.1"
+            ],
+            "details": "Test CandidateForm validation with Zod schema. Test TemplateBuilder form validation. Test all required field validations, email format validation, and custom validation rules. Mock form submissions and test error states.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create API integration tests",
+            "description": "Test all API endpoints and data fetching with TanStack Query",
+            "dependencies": [
+              "12.1"
+            ],
+            "details": "Mock API responses for interviews, candidates, and templates. Test TanStack Query hooks with success and error scenarios. Test data mutations and cache invalidation. Verify loading states and error handling.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Build component rendering tests",
+            "description": "Test critical component rendering and props handling",
+            "dependencies": [
+              "12.1"
+            ],
+            "details": "Test InterviewList, CandidateList, and TemplateList components render correctly with mock data. Test chart components display with proper data. Test conditional rendering and empty states. Verify proper props passing and component structure.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Add user interaction tests",
+            "description": "Test user interactions like filtering, searching, and navigation",
+            "dependencies": [
+              "12.2",
+              "12.3",
+              "12.4"
+            ],
+            "details": "Test table filtering and search functionality. Test form submissions and user input handling. Test navigation between pages and detail views. Test button clicks, dropdown selections, and interactive elements. Ensure 60% test coverage minimum.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Configure Biome linting",
+            "description": "Setup Biome for code formatting and linting",
+            "dependencies": [],
+            "details": "Install and configure Biome with appropriate rules for TypeScript and React. Create biome.json configuration file. Setup npm scripts for lint and format commands. Fix any existing linting issues in the codebase.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Complete comprehensive CLAUDE_CODE.md documentation",
+            "description": "Finalize AI collaboration documentation with all required sections",
+            "dependencies": [
+              "12.5"
+            ],
+            "details": "Complete all 7 required sections: Setup & Scaffolding, Component Development, Debugging & Problem Solving, Testing, Iteration Examples, Critical Review, What Worked/Didn't Work. Include specific prompts, Claude responses, modifications made, and time estimates. This is 30% of the grade.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "Deploy to Vercel with environment setup",
+            "description": "Deploy application to Vercel and configure production environment",
+            "dependencies": [
+              "12.6",
+              "12.7"
+            ],
+            "details": "Create Vercel project and configure deployment settings. Setup environment variables for production. Configure build settings for Next.js app. Test deployment and verify all features work in production. Update README.md with deployment link and setup instructions.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-10-22T19:49:05.748Z",
+      "updated": "2025-10-22T19:49:05.748Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
