@@ -18,6 +18,9 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: 'AI Interview Dashboard | Key Singularity',
   description: 'Admin dashboard for AI-powered voice interviews',
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

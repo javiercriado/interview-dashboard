@@ -995,3 +995,246 @@ Error: A <Select.Item /> must have a value prop that is not an empty string.
 **Effectiveness:** 8/10 (needed corrections but quick to fix)
 
 ---
+
+## 14. Task #13 Adjustments: Application Layout Fixes
+
+**Context:** After completing Task #13 (Application Layout & Missing Features), user identified several issues that needed fixes during final validation.
+
+**Task ID:** Task Master #13 (Complexity: 5/10)
+
+### Issues Identified During User Testing
+
+**Issue #1: Date Range Filter Not Working**
+
+**User Feedback:**
+```
+"the date range filter doesn't filter the rows on the table. for example if I select a date range from 01 to 03 of october there should be no interviews on the table because all those 3 interviews are from 08, 09 and 10 of october."
+```
+
+**Root Cause:**
+The API server had parameters for `startDate` and `endDate` but wasn't actually using them to filter interviews. The filtering logic was missing.
+
+**First Fix Applied (api/server.js):**
+```javascript
+// Date range filtering
+if (startDate || endDate) {
+  filtered = filtered.filter(i => {
+    const interviewDate = new Date(i.completedAt);
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    // Set time to start of day for startDate and end of day for endDate
+    if (start) start.setHours(0, 0, 0, 0);
+    if (end) end.setHours(23, 59, 59, 999);
+
+    if (start && end) {
+      return interviewDate >= start && interviewDate <= end;
+    } else if (start) {
+      return interviewDate >= start;
+    } else if (end) {
+      return interviewDate <= end;
+    }
+    return true;
+  });
+}
+```
+
+**User reported filter worked but needed adjustment:**
+```
+"the date range must include the start and the end date. currently if you select from 8 until 10th of october it will show the interview of the 8th of october but not the interview of the 10th of october."
+```
+
+**Root Cause Analysis:**
+Timezone issue. Interview dates use UTC (`2025-10-10T14:30:00Z`), but `setHours()` sets time in local timezone, causing boundary issues.
+
+**Final Fix Applied:**
+```javascript
+// Set time to start of day for startDate and end of day for endDate (UTC)
+if (start) start.setUTCHours(0, 0, 0, 0);
+if (end) end.setUTCHours(23, 59, 59, 999);
+```
+
+Changed from `setHours()` to `setUTCHours()` to properly handle UTC dates.
+
+**Result:** ✅ Date range filter now correctly includes both start and end dates
+**Iterations:** 2
+**Key Learning:** Always use UTC methods when working with UTC timestamps
+
+---
+
+**Issue #2: Mobile Sidebar Logo Overlap**
+
+**User Feedback:**
+```
+"in mobile view the hamburger menu closing icon it's on top of the site logo. the site logo should be at the right side of the hamburger menu closing icon."
+```
+
+**Root Cause:**
+The X button (hamburger menu close) and logo were both positioned independently, causing overlap on mobile.
+
+**First Attempt (Incorrect):**
+```typescript
+<div className="flex h-16 items-center border-b border-border px-6 lg:px-6 px-16">
+```
+This had conflicting Tailwind classes - last `px-16` overrode everything.
+
+**Final Fix Applied:**
+```typescript
+<div className="flex h-16 items-center border-b border-border pl-16 pr-6 lg:px-6">
+```
+
+Proper responsive padding:
+- Mobile: `pl-16` (64px left to clear X button) + `pr-6` (normal right)
+- Desktop `lg:px-6`: Normal padding both sides (X button hidden)
+
+**Result:** ✅ Logo properly positioned to right of hamburger menu
+**Iterations:** 2 (first attempt had syntax error)
+**Key Learning:** Use separate `pl-` and `pr-` for asymmetric padding, not multiple `px-` classes
+
+---
+
+**Issue #3: RadarChart Using Wrong Scale**
+
+**User Feedback:**
+```
+"in the RadarChart component I want it's limits to be 100. all scores are from 0 to 100. candidates have normally 80 or 95 scores but not 100. the maximum growth or size of the component RadarChart should be always 100"
+```
+
+**Root Cause:**
+The API returns competency scores in 0-100 range (like 90, 85, 88), but the chart was configured for 0-1 scale:
+
+```typescript
+// BAD: Chart configured for 0-1 but data is 0-100
+score: score, // Value like 90
+fullMark: 1,  // ❌ Max only 1
+domain={[0, 1]} // ❌ Scale 0-1
+```
+
+This made all scores appear maxed out (90/1 = 9000%).
+
+**Fix Applied (3 edits needed):**
+
+1. **Data preparation:**
+```typescript
+score: score, // Use actual 0-100 score from API
+fullMark: 100,  // Max score is 100
+```
+
+2. **Chart domain:**
+```typescript
+<PolarRadiusAxis
+  domain={[0, 100]}  // 0-100 scale
+/>
+```
+
+3. **Progress bar display:**
+```typescript
+// BAD: Multiplying by 100 (score was already 0-100)
+style={{ width: `${score * 100}%` }}
+
+// GOOD: Use score directly as percentage
+style={{ width: `${score}%` }}
+```
+
+**Result:** ✅ RadarChart now displays with proper 0-100 scale
+**Files Modified:** frontend/src/app/interviews/[id]/page.tsx (3 edits)
+**Key Learning:** Verify data format from API before configuring chart scales
+
+---
+
+**Issue #4: Accessibility Linting Error**
+
+**Lint Error:**
+```
+Enforce to have the onClick mouse event with the onKeyUp, onKeyDown, or the onKeyPress keyboard event.
+```
+
+**Root Cause:**
+Mobile sidebar overlay had `onClick` but no keyboard event handler.
+
+**Fix Applied:**
+```typescript
+<div
+  className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+  onClick={() => setIsMobileOpen(false)}
+  onKeyDown={(e) => {
+    if (e.key === 'Escape') setIsMobileOpen(false);
+  }}
+  role="button"
+  tabIndex={0}
+  aria-label="Close sidebar"
+/>
+```
+
+Added:
+- `onKeyDown` handler for Escape key
+- `role="button"` for semantic HTML
+- `tabIndex={0}` to make focusable
+- `aria-label` for screen readers
+
+**Result:** ✅ All accessibility checks passing
+**Key Learning:** Interactive elements need both mouse and keyboard event handlers
+
+---
+
+### Quality Checks After All Fixes
+
+**Lint:**
+```bash
+npx biome check --write --unsafe .
+✅ Checked 51 files in 120ms
+✅ Fixed 6 files (auto-formatting)
+✅ No errors
+```
+
+**Type Check:**
+```bash
+npm run type-check
+✅ No TypeScript errors
+```
+
+**Build:**
+```bash
+npm run build
+✅ Compiled successfully
+✅ 9 static pages generated
+✅ Bundle size: 87.5 kB first load
+```
+
+**All Quality Gates:** ✅ PASSED
+
+---
+
+### Summary of Task #13 Adjustments
+
+**Total Fixes:** 4 major issues
+**Files Modified:**
+- `api/server.js` (date filtering with UTC)
+- `frontend/src/components/layout/sidebar.tsx` (mobile logo positioning + a11y)
+- `frontend/src/app/interviews/[id]/page.tsx` (radar chart scale)
+
+**Total Iterations:** 6
+- Date filter: 2 iterations (missing logic → UTC timezone)
+- Mobile logo: 2 iterations (syntax error → proper responsive padding)
+- Radar chart: 1 iteration (direct fix)
+- Accessibility: 1 iteration (direct fix)
+
+**Time Investment:** ~25 minutes for all fixes
+**Effectiveness:** 9/10 (issues found through user testing, all resolved systematically)
+
+**Key Takeaways:**
+1. Always restart Node.js server after API changes (no hot reload)
+2. Use UTC methods (`setUTCHours`) for UTC timestamps
+3. Test responsive layouts on actual mobile viewport
+4. Verify chart data format matches scale configuration
+5. Run accessibility linting before final approval
+
+**What Worked Well:**
+- User testing caught issues quality checks missed
+- Systematic fixing of each issue
+- Clear error messages helped diagnose problems
+- Auto-formatting fixed most lint issues
+
+**Result:** ✅ Task #13 complete with all adjustments validated and quality checks passing
+
+---

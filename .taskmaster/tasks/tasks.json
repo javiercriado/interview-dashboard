@@ -796,7 +796,7 @@
         "description": "Create unified application layout with sidebar navigation, header, and breadcrumbs while implementing missing PRD features including date range filtering, CSV export, sorting fixes, and competency chart corrections",
         "details": "Create comprehensive application layout structure: 1) Build Sidebar component with navigation menu items (Dashboard, Interviews, Candidates, Templates, Analytics) using lucide-react icons and active state styling. 2) Create Header component with KeySingularity branding, mock user profile dropdown, and notification bell icon. 3) Implement Breadcrumb component showing current page hierarchy. 4) Build Layout wrapper component integrating sidebar, header, and breadcrumbs with responsive design (mobile hamburger menu, collapsible sidebar). 5) Replace standalone homepage with integrated dashboard layout. Implement missing PRD features: 6) Fix date range filter in InterviewList component to actually filter API data based on selected date range. 7) Add CSV export functionality to interview list with download button using csv-writer or similar library. 8) Enable sorting on 'status' and 'recommendation' columns in interview table (currently missing from column definitions). 9) Fix competency radar chart in InterviewDetail to use max score of 100 instead of multiplying by 10 (change fullMark: 100, remove score * 10). 10) Download and integrate KeySingularity favicon from their website. 11) Update all page components to use new layout structure. Use shadcn/ui components for consistent styling, ensure responsive design works on all breakpoints, implement proper TypeScript typing for all components.",
         "testStrategy": "Test layout components render correctly on mobile, tablet, and desktop breakpoints. Verify sidebar navigation works with active states and proper routing. Test date range filter actually filters interview data when date range is selected. Verify CSV export downloads file with correct interview data and proper formatting. Test sorting functionality on all columns including newly enabled status and recommendation columns. Verify competency radar chart displays scores correctly with max value of 100. Test breadcrumb navigation shows correct hierarchy for all pages. Verify favicon displays correctly in browser tab. Test all existing functionality still works after layout integration.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           1,
           4,
@@ -810,7 +810,7 @@
     ],
     "metadata": {
       "created": "2025-10-22T19:49:05.748Z",
-      "updated": "2025-10-23T04:33:55.316Z",
+      "updated": "2025-10-23T14:08:31.572Z",
       "description": "Tasks for master context"
     }
   }

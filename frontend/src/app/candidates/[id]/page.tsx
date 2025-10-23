@@ -282,7 +282,7 @@ export default function CandidateDetailPage() {
                   >
                     <TableCell>{format(new Date(interview.completedAt), 'MMM dd, yyyy')}</TableCell>
                     <TableCell>{interview.jobPosition}</TableCell>
-                    <TableCell>{interview.score.toFixed(1)}/10</TableCell>
+                    <TableCell>{interview.score}/100</TableCell>
                     <TableCell>
                       <Badge>{interview.status.replace('_', ' ')}</Badge>
                     </TableCell>

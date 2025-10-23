@@ -69,6 +69,27 @@ let interviews = [
     summary: 'Exceptional candidate. Deep technical expertise, excellent communication, strong culture fit. Highly recommended for hire.',
     transcript: 'AI: Walk me through how you would design a URL shortener...\nCandidate: I would start by considering the scale...',
     audioUrl: '/audio/interview-3.mp3'
+  },
+  {
+    id: '4',
+    candidateId: 'c4',
+    candidateName: 'Javier Criado',
+    candidateEmail: 'javiercriado2@email.com',
+    jobPosition: 'Senior Frontend Engineer',
+    completedAt: '2025-10-23T15:22:00Z',
+    duration: 1654,
+    status: 'completed',
+    score: 99,
+    recommendation: 'strong_hire',
+    competencies: {
+      'Technical Skills': 99,
+      'Problem Solving': 99,
+      'Communication': 99,
+      'Cultural Fit': 99
+    },
+    summary: 'Exceptional candidate. Deep technical expertise, excellent communication, strong culture fit. Highly recommended for hire.',
+    transcript: 'AI: Walk me through how you would design a URL shortener...\nCandidate: I would start by considering the scale...',
+    audioUrl: '/audio/interview-3.mp3'
   }
 ];
 
@@ -89,9 +110,9 @@ let candidates = [
     name: 'Michael Chen',
     email: 'mchen@email.com',
     phone: '+1-555-0102',
-    appliedFor: 'Product Manager',
-    status: 'interviewed',
-    invitedAt: '2025-10-08T10:00:00Z',
+    appliedFor: 'Senior Frontend Engineer',
+    status: 'invited',
+    invitedAt: '2025-22-08T10:00:00Z',
     interviewedAt: '2025-10-09T10:15:00Z',
     source: 'Job Board'
   },
@@ -108,13 +129,14 @@ let candidates = [
   },
   {
     id: 'c4',
-    name: 'David Kim',
-    email: 'dkim@email.com',
-    phone: '+1-555-0104',
-    appliedFor: 'Data Scientist',
-    status: 'invited',
-    invitedAt: '2025-10-10T08:00:00Z',
-    source: 'LinkedIn'
+    name: 'Javier Criado',
+    email: 'javiercriado2@email.com',
+    phone: '+51-926-128-494',
+    appliedFor: 'Senior Frontend Engineer',
+    status: 'interviewed',
+    invitedAt: '2025-10-21T12:00:00Z',
+    interviewedAt: '2025-10-23T15:15:00Z',
+    source: 'Job Board'
   },
   {
     id: 'c5',
@@ -188,6 +210,29 @@ app.get('/api/interviews', (req, res) => {
 
   if (status) filtered = filtered.filter(i => i.status === status);
   if (jobPosition) filtered = filtered.filter(i => i.jobPosition === jobPosition);
+
+  // Date range filtering
+  if (startDate || endDate) {
+    filtered = filtered.filter(i => {
+      const interviewDate = new Date(i.completedAt);
+      const start = startDate ? new Date(startDate) : null;
+      const end = endDate ? new Date(endDate) : null;
+
+      // Set time to start of day for startDate and end of day for endDate (UTC)
+      if (start) start.setUTCHours(0, 0, 0, 0);
+      if (end) end.setUTCHours(23, 59, 59, 999);
+
+      if (start && end) {
+        return interviewDate >= start && interviewDate <= end;
+      } else if (start) {
+        return interviewDate >= start;
+      } else if (end) {
+        return interviewDate <= end;
+      }
+      return true;
+    });
+  }
+
   if (search) {
     const term = search.toLowerCase();
     filtered = filtered.filter(i =>

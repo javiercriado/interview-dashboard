@@ -1,9 +1,10 @@
 import { CandidateList } from '@/components/candidates/candidate-list';
+import { AppLayout } from '@/components/layout/app-layout';
 
 export default function CandidatesPage() {
   return (
-    <div className="container mx-auto py-8 px-4">
+    <AppLayout>
       <CandidateList />
-    </div>
+    </AppLayout>
   );
 }

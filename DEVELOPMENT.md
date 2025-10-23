@@ -682,4 +682,90 @@ npx shadcn@latest add textarea
 
 ---
 
-*Last Updated: Task #7 Complete (~7.2 hours total elapsed: 3h planning + 1h Task #1 + 0.5h Task #2 + 0.4h Task #3 + 0.5h Task #4 + 0.6h Task #5 + 0.4h Task #6 + 0.8h Task #7)*
+### Task #13: Application Layout & Missing Features + Adjustments (COMPLETE)
+**Status:** ✅ Complete
+**Time:** ~70 minutes (45 min initial + 25 min adjustments)
+**Claude Effectiveness:** 9/10
+
+**What Was Accomplished:**
+- Created unified application layout with sidebar navigation, header, and breadcrumbs
+- Built responsive mobile sidebar with hamburger menu (logo properly positioned to right of X button)
+- Implemented CSV export functionality on interview list
+- Enabled sorting on Status and Recommendation columns
+- Fixed competency radar chart to use 0-100 scale (was incorrectly using 0-1)
+- Added date range filtering with proper UTC timezone handling
+- Integrated KeySingularity logo and favicon
+- Made home page (/) the analytics dashboard
+- Wrapped all pages in AppLayout for consistent navigation
+
+**Layout Components Created (4 files):**
+1. `sidebar.tsx` (106 lines) - Navigation with responsive mobile menu
+2. `header.tsx` - Branding, notifications, user dropdown
+3. `breadcrumbs.tsx` - Dynamic page hierarchy
+4. `app-layout.tsx` - Unified wrapper component
+
+**Key Claude Interactions:**
+1. **Initial Layout Implementation** - Generated complete layout system with all features (saved ~35 min)
+2. **User Testing Caught 4 Issues** - Systematic fixes for each problem:
+   - Date range filter not working (API missing logic)
+   - Mobile logo positioning (responsive padding fix)
+   - RadarChart wrong scale (0-1 vs 0-100)
+   - Accessibility error (keyboard event needed)
+
+**Critical Issues & Fixes:**
+
+**Issue #1: Date Range Filter**
+- **Problem:** API had `startDate`/`endDate` parameters but wasn't using them
+- **First Fix:** Added filter logic with `setHours()` - didn't include end date properly
+- **Second Fix:** Changed to `setUTCHours()` to handle UTC timestamps correctly
+- **Learning:** Always use UTC methods when working with UTC dates
+
+**Issue #2: Mobile Sidebar Logo**
+- **Problem:** X button overlapping logo on mobile
+- **First Attempt:** `px-6 lg:px-6 px-16` (conflicting classes)
+- **Fix:** `pl-16 pr-6 lg:px-6` (proper responsive padding)
+- **Learning:** Use separate pl-/pr- for asymmetric padding
+
+**Issue #3: RadarChart Scale**
+- **Problem:** API returns 0-100 scores, chart configured for 0-1
+- **Fix:** Changed `domain={[0, 100]}`, `fullMark: 100`, removed `* 100` in progress bars
+- **Learning:** Verify API data format before configuring charts
+
+**Issue #4: Accessibility**
+- **Problem:** Overlay had onClick but no keyboard handler
+- **Fix:** Added onKeyDown (Escape key), role, tabIndex, aria-label
+- **Learning:** Interactive elements need both mouse and keyboard events
+
+**Quality Checks:**
+- ✅ Lint: Auto-fixed 6 files, 0 errors
+- ✅ Type-check: Passed with 0 errors
+- ✅ Build: Compiled successfully (9 static pages, 87.5 kB bundle)
+- ✅ User Testing: All features validated
+
+**Files Modified:**
+- `api/server.js` (date filtering with UTC)
+- `frontend/src/components/layout/sidebar.tsx` (mobile layout + accessibility)
+- `frontend/src/app/interviews/[id]/page.tsx` (radar chart scale)
+- `frontend/src/components/interviews/interview-list.tsx` (CSV export + sorting)
+- Multiple pages wrapped in AppLayout
+
+**Total Iterations:** 6 (date filter: 2, mobile logo: 2, chart: 1, a11y: 1)
+
+**Time Saved with Claude:** ~60 minutes (46% faster including all corrections)
+
+**Key Takeaways:**
+- **User testing catches issues quality checks miss**
+- **API server needs restart after changes** (no hot reload)
+- **UTC timezone handling critical** for date filtering
+- **Responsive layouts need mobile testing**
+- **Accessibility linting prevents usability issues**
+
+---
+
+**Blockers:** None
+
+**Risk:** Time constraint (6-8 hours) - mitigating by using production patterns and heavy Claude assistance
+
+---
+
+*Last Updated: Task #13 Complete with Adjustments (~8.4 hours total elapsed: 3h planning + 1h Task #1 + 0.5h Task #2 + 0.4h Task #3 + 0.5h Task #4 + 0.6h Task #5 + 0.4h Task #6 + 0.8h Task #7 + 1.2h Task #13)*

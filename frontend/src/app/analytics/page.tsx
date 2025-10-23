@@ -1,5 +1,6 @@
 'use client';
 
+import { AppLayout } from '@/components/layout/app-layout';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -27,14 +28,20 @@ export default function AnalyticsPage() {
   const { data: interviews, isLoading: interviewsLoading } = useInterviews({});
 
   if (analyticsLoading || interviewsLoading) {
-    return <AnalyticsSkeleton />;
+    return (
+      <AppLayout>
+        <AnalyticsSkeleton />
+      </AppLayout>
+    );
   }
 
   if (!analytics || !interviews) {
     return (
-      <div className="container mx-auto p-6">
-        <p className="text-muted-foreground">No analytics data available.</p>
-      </div>
+      <AppLayout>
+        <div>
+          <p className="text-muted-foreground">No analytics data available.</p>
+        </div>
+      </AppLayout>
     );
   }
 
@@ -68,193 +75,195 @@ export default function AnalyticsPage() {
     .slice(0, 5);
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-heading font-bold">Analytics Dashboard</h1>
-        <p className="text-muted-foreground">Overview of interview performance and metrics</p>
-      </div>
+    <AppLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-heading font-bold text-primary">Analytics</h1>
+          <p className="text-muted-foreground">Overview of interview performance and metrics</p>
+        </div>
 
-      {/* Key Metrics Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <MetricCard
-          title="Total Interviews"
-          value={analytics.total.toString()}
-          icon={<Users className="h-4 w-4 text-muted-foreground" />}
-        />
-        <MetricCard
-          title="Completion Rate"
-          value={`${completionRate}%`}
-          icon={<CheckCircle className="h-4 w-4 text-muted-foreground" />}
-        />
-        <MetricCard
-          title="Average Score"
-          value={analytics.avgScore.toFixed(1)}
-          icon={<Award className="h-4 w-4 text-muted-foreground" />}
-        />
-        <MetricCard
-          title="Completed"
-          value={analytics.completed.toString()}
-          icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
-        />
-      </div>
+        {/* Key Metrics Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <MetricCard
+            title="Total Interviews"
+            value={analytics.total.toString()}
+            icon={<Users className="h-4 w-4 text-muted-foreground" />}
+          />
+          <MetricCard
+            title="Completion Rate"
+            value={`${completionRate}%`}
+            icon={<CheckCircle className="h-4 w-4 text-muted-foreground" />}
+          />
+          <MetricCard
+            title="Average Score"
+            value={analytics.avgScore.toFixed(1)}
+            icon={<Award className="h-4 w-4 text-muted-foreground" />}
+          />
+          <MetricCard
+            title="Completed"
+            value={analytics.completed.toString()}
+            icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
+          />
+        </div>
 
-      {/* Charts Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Funnel Visualization */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Interview Funnel</CardTitle>
-            <CardDescription>Candidate journey through interview process</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={funnelData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis type="number" stroke="#94a3b8" />
-                <YAxis dataKey="name" type="category" stroke="#94a3b8" width={100} />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0];
-                      const label = data.payload?.name || data.name;
-                      return (
-                        <div
-                          style={{
-                            backgroundColor: '#1e293b',
-                            border: '1px solid #334155',
-                            borderRadius: '6px',
-                            padding: '8px 12px',
-                          }}
-                        >
-                          <span style={{ color: '#f8fafc' }}>{label}:</span>
-                          <span style={{ color: '#facc15', fontWeight: 600 }}> {data.value}</span>
-                        </div>
-                      );
+        {/* Charts Grid */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Funnel Visualization */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Interview Funnel</CardTitle>
+              <CardDescription>Candidate journey through interview process</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={funnelData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis type="number" stroke="#94a3b8" />
+                  <YAxis dataKey="name" type="category" stroke="#94a3b8" width={100} />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0];
+                        const label = data.payload?.name || data.name;
+                        return (
+                          <div
+                            style={{
+                              backgroundColor: '#1e293b',
+                              border: '1px solid #334155',
+                              borderRadius: '6px',
+                              padding: '8px 12px',
+                            }}
+                          >
+                            <span style={{ color: '#f8fafc' }}>{label}:</span>
+                            <span style={{ color: '#facc15', fontWeight: 600 }}> {data.value}</span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Bar dataKey="value" radius={[0, 8, 8, 0]}>
+                    {funnelData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.fill} />
+                    ))}
+                    <LabelList dataKey="value" position="right" fill="#f8fafc" />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Recommendation Distribution */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recommendation Distribution</CardTitle>
+              <CardDescription>Hiring recommendations breakdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={recommendationsData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name} ${((percent as number) * 100).toFixed(0)}%`
                     }
-                    return null;
-                  }}
-                />
-                <Bar dataKey="value" radius={[0, 8, 8, 0]}>
-                  {funnelData.map((entry) => (
-                    <Cell key={entry.name} fill={entry.fill} />
-                  ))}
-                  <LabelList dataKey="value" position="right" fill="#f8fafc" />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+                    outerRadius={100}
+                    dataKey="value"
+                  >
+                    {recommendationsData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0];
+                        return (
+                          <div
+                            style={{
+                              backgroundColor: '#1e293b',
+                              border: '1px solid #334155',
+                              borderRadius: '6px',
+                              padding: '8px 12px',
+                            }}
+                          >
+                            <span style={{ color: '#f8fafc' }}>{data.name}:</span>
+                            <span style={{ color: '#facc15', fontWeight: 600 }}> {data.value}</span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-        {/* Recommendation Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recommendation Distribution</CardTitle>
-            <CardDescription>Hiring recommendations breakdown</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={recommendationsData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) =>
-                    `${name} ${((percent as number) * 100).toFixed(0)}%`
-                  }
-                  outerRadius={100}
-                  dataKey="value"
-                >
-                  {recommendationsData.map((entry) => (
-                    <Cell key={entry.name} fill={entry.fill} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0];
-                      return (
-                        <div
-                          style={{
-                            backgroundColor: '#1e293b',
-                            border: '1px solid #334155',
-                            borderRadius: '6px',
-                            padding: '8px 12px',
-                          }}
-                        >
-                          <span style={{ color: '#f8fafc' }}>{data.name}:</span>
-                          <span style={{ color: '#facc15', fontWeight: 600 }}> {data.value}</span>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          {/* Position Breakdown */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Position Breakdown</CardTitle>
+              <CardDescription>Interviews by job position</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={positionData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="position" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0];
+                        const label = data.payload?.position || data.name;
+                        return (
+                          <div
+                            style={{
+                              backgroundColor: '#1e293b',
+                              border: '1px solid #334155',
+                              borderRadius: '6px',
+                              padding: '8px 12px',
+                            }}
+                          >
+                            <span style={{ color: '#f8fafc' }}>{label}:</span>
+                            <span style={{ color: '#facc15', fontWeight: 600 }}> {data.value}</span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Bar dataKey="count" fill="#facc15" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-        {/* Position Breakdown */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Position Breakdown</CardTitle>
-            <CardDescription>Interviews by job position</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={positionData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="position" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0];
-                      const label = data.payload?.position || data.name;
-                      return (
-                        <div
-                          style={{
-                            backgroundColor: '#1e293b',
-                            border: '1px solid #334155',
-                            borderRadius: '6px',
-                            padding: '8px 12px',
-                          }}
-                        >
-                          <span style={{ color: '#f8fafc' }}>{label}:</span>
-                          <span style={{ color: '#facc15', fontWeight: 600 }}> {data.value}</span>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Bar dataKey="count" fill="#facc15" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Recent Interviews */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Interviews</CardTitle>
-            <CardDescription>Latest completed interviews</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentInterviews.map((interview) => (
-                <RecentInterviewItem key={interview.id} interview={interview} />
-              ))}
-              {recentInterviews.length === 0 && (
-                <p className="text-sm text-muted-foreground">No recent interviews</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+          {/* Recent Interviews */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Interviews</CardTitle>
+              <CardDescription>Latest completed interviews</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentInterviews.map((interview) => (
+                  <RecentInterviewItem key={interview.id} interview={interview} />
+                ))}
+                {recentInterviews.length === 0 && (
+                  <p className="text-sm text-muted-foreground">No recent interviews</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }
 
@@ -315,7 +324,7 @@ function RecentInterviewItem({ interview }: { interview: Interview }) {
 // Loading Skeleton
 function AnalyticsSkeleton() {
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-6">
       <div className="space-y-2">
         <Skeleton className="h-8 w-64" />
         <Skeleton className="h-4 w-96" />

@@ -32,9 +32,39 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { ArrowUpDown, CalendarIcon, Search } from 'lucide-react';
+import { ArrowUpDown, CalendarIcon, Download, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useDeferredValue, useState } from 'react';
+
+// CSV export function
+function exportToCSV(data: Interview[], filename: string) {
+  const headers = ['Candidate', 'Email', 'Position', 'Date', 'Score', 'Status', 'Recommendation'];
+  const rows = data.map((interview) => [
+    interview.candidateName,
+    interview.candidateEmail,
+    interview.jobPosition,
+    interview.completedAt ? format(new Date(interview.completedAt), 'yyyy-MM-dd') : '',
+    interview.score.toFixed(1),
+    interview.status,
+    interview.recommendation,
+  ]);
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map((row) => row.map((cell) => `"${cell}"`).join(',')),
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 
 export function InterviewList() {
   const router = useRouter();
@@ -117,12 +147,20 @@ export function InterviewList() {
       ),
       cell: ({ row }) => {
         const score = row.original.score;
-        return <div className="text-center font-semibold">{score.toFixed(1)}/10</div>;
+        return <div className="text-center font-semibold">{score}/100</div>;
       },
     },
     {
       accessorKey: 'status',
-      header: 'Status',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const status = row.original.status;
         const statusColors: Record<Interview['status'], string> = {
@@ -136,7 +174,15 @@ export function InterviewList() {
     },
     {
       accessorKey: 'recommendation',
-      header: 'Recommendation',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Recommendation
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const recommendation = row.original.recommendation;
         const recommendationColors: Record<Interview['recommendation'], string> = {
@@ -278,6 +324,21 @@ export function InterviewList() {
             Clear filters
           </Button>
         )}
+
+        {/* Export Button */}
+        <Button
+          variant="outline"
+          onClick={() => {
+            if (interviews && interviews.length > 0) {
+              exportToCSV(interviews, `interviews-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+            }
+          }}
+          disabled={!interviews || interviews.length === 0}
+          className="gap-2"
+        >
+          <Download className="h-4 w-4" />
+          Export CSV
+        </Button>
       </div>
 
       {/* Table */}
