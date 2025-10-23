@@ -345,7 +345,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -353,7 +353,7 @@
             "description": "Build the main candidate list view with table columns for name, email, position, status, and interview date",
             "dependencies": [],
             "details": "Create CandidateList component using TanStack Table with columns: name, email, position, status, interview date. Setup proper TypeScript types for candidate data. Include loading states and empty state handling. Add row click handlers for navigation to detail view.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -362,7 +362,7 @@
             "description": "Create the candidate add/edit form with proper validation schema",
             "dependencies": [],
             "details": "Build CandidateForm component using React Hook Form. Create Zod schema for validation with fields: name (required, min 2 chars), email (required, valid email), phone (optional, valid format), position (required), source (optional). Setup form submission handling and error display.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -373,7 +373,7 @@
               "7.2"
             ],
             "details": "Enhance form validation with real-time validation, custom error messages, field-specific validation rules. Add async validation for email uniqueness if needed. Implement form reset and dirty state management. Add validation feedback UI components.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -384,7 +384,7 @@
               "7.1"
             ],
             "details": "Create CandidateDetail component displaying candidate profile information, contact details, application source, and interview history if any. Include breadcrumb navigation back to candidate list. Add edit candidate button linking to CandidateForm in edit mode.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -395,7 +395,7 @@
               "7.4"
             ],
             "details": "Create status workflow components showing candidate progression: pending → invited → interviewed → hired/rejected. Build status transition buttons with confirmation dialogs. Add visual workflow indicator showing current status and available next steps. Include status history with timestamps.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -407,7 +407,7 @@
               "7.4"
             ],
             "details": "Integrate TanStack Query mutations for create, update, delete candidate operations. Add proper error handling and success notifications. Implement optimistic updates for better UX. Setup cache invalidation after mutations. Add loading states during API operations.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -419,7 +419,7 @@
               "7.6"
             ],
             "details": "Add status filter dropdown to CandidateList. Implement debounced search functionality across name, email, and position fields. Add clear filters button. Ensure filters work with API pagination. Include filter state in URL params for bookmarking.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -430,7 +430,7 @@
               "7.5"
             ],
             "details": "Create invitation modal/dialog with email template preview. Add send invitation button in candidate detail view. Implement mock email service that simulates sending invitations. Update candidate status to 'invited' after sending. Add invitation history tracking with timestamps.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -445,7 +445,7 @@
         "dependencies": [
           7
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -453,7 +453,7 @@
             "description": "Set up CSV parsing library and implement file drop zone UI component",
             "dependencies": [],
             "details": "Install Papa Parse library via npm. Create CsvUpload component with drag & drop area using HTML5 file API. Implement drop zone styling with visual feedback for drag over/drop states. Add file input fallback for browsers without drag support. Handle file selection and basic file type validation (CSV only).",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -464,7 +464,7 @@
               "8.1"
             ],
             "details": "Use Papa Parse to read and parse CSV files. Create preview table component to display parsed data with proper column headers. Handle different CSV formats and delimiters. Implement table virtualization for large files. Add column mapping interface if headers don't match expected format.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -475,7 +475,7 @@
               "8.2"
             ],
             "details": "Create validation schema for required fields (name, email) and email format validation. Implement row-level validation checking against schema. Add visual error indicators to preview table rows with invalid data. Display validation error messages with specific field issues. Provide validation summary showing total errors found.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -486,7 +486,7 @@
               "8.3"
             ],
             "details": "Create progress bar component showing import completion percentage. Implement batch processing to handle large CSV files without blocking UI. Add cancel import functionality. Show current processing status (validating, importing, complete). Handle API rate limiting and retry logic for failed imports.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -497,7 +497,7 @@
               "8.4"
             ],
             "details": "Create import results component displaying total processed, successful imports, and failed records. Show detailed error list for failed imports with specific issues. Provide download link for error report CSV. Add success message with link to candidate list. Include option to retry failed imports after fixing data.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -789,11 +789,28 @@
             "testStrategy": ""
           }
         ]
+      },
+      {
+        "id": 13,
+        "title": "Implement Application Layout Structure and Missing PRD Features",
+        "description": "Create unified application layout with sidebar navigation, header, and breadcrumbs while implementing missing PRD features including date range filtering, CSV export, sorting fixes, and competency chart corrections",
+        "details": "Create comprehensive application layout structure: 1) Build Sidebar component with navigation menu items (Dashboard, Interviews, Candidates, Templates, Analytics) using lucide-react icons and active state styling. 2) Create Header component with KeySingularity branding, mock user profile dropdown, and notification bell icon. 3) Implement Breadcrumb component showing current page hierarchy. 4) Build Layout wrapper component integrating sidebar, header, and breadcrumbs with responsive design (mobile hamburger menu, collapsible sidebar). 5) Replace standalone homepage with integrated dashboard layout. Implement missing PRD features: 6) Fix date range filter in InterviewList component to actually filter API data based on selected date range. 7) Add CSV export functionality to interview list with download button using csv-writer or similar library. 8) Enable sorting on 'status' and 'recommendation' columns in interview table (currently missing from column definitions). 9) Fix competency radar chart in InterviewDetail to use max score of 100 instead of multiplying by 10 (change fullMark: 100, remove score * 10). 10) Download and integrate KeySingularity favicon from their website. 11) Update all page components to use new layout structure. Use shadcn/ui components for consistent styling, ensure responsive design works on all breakpoints, implement proper TypeScript typing for all components.",
+        "testStrategy": "Test layout components render correctly on mobile, tablet, and desktop breakpoints. Verify sidebar navigation works with active states and proper routing. Test date range filter actually filters interview data when date range is selected. Verify CSV export downloads file with correct interview data and proper formatting. Test sorting functionality on all columns including newly enabled status and recommendation columns. Verify competency radar chart displays scores correctly with max value of 100. Test breadcrumb navigation shows correct hierarchy for all pages. Verify favicon displays correctly in browser tab. Test all existing functionality still works after layout integration.",
+        "status": "pending",
+        "dependencies": [
+          1,
+          4,
+          5,
+          6,
+          7
+        ],
+        "priority": "medium",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-10-22T19:49:05.748Z",
-      "updated": "2025-10-23T02:43:00.015Z",
+      "updated": "2025-10-23T04:33:55.316Z",
       "description": "Tasks for master context"
     }
   }

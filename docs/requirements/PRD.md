@@ -67,14 +67,14 @@ font-family: 'Open Sans'       /* Body text */
 **Feature Requirements**:
 - Detailed interview transcript/summary
 - AI-generated candidate assessment
-- Scoring breakdown by competency
+- Scoring breakdown by competency 
 - Recommendations (hire/no-hire/maybe/strong_hire)
 - Audio playback controls (simulated, doesn't actually play)
 - Interviewer notes section
 
 **Deliverables**:
 - Full interview information display
-- Competency breakdown radar chart (using Recharts)
+- Competency breakdown radar chart (using Recharts) [let's make the max. score 1,000 o 100 and not multiply by 10 the actual scoring of each candidate]
 - Transcript display in readable format
 - Mock audio player UI
 - Notes textarea with local state persistence

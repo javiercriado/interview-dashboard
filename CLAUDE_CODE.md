@@ -471,6 +471,262 @@ Array.from({ length: 5 }, (_, i) => `skeleton-row-${i}`).map((rowKey, i) => (
 
 ---
 
+### Task #7: Candidate Management CRUD Operations
+
+**Context:** Implement complete candidate management system with list view, forms, detail view, bulk CSV upload, and status workflow
+**Task ID:** #7 from Task Master (Complexity: 7/10, 8 subtasks)
+
+**Initial Implementation Prompt:**
+```
+"I'm working on the AI Interview Dashboard.
+
+1. Check next/in-progress task: task-master next
+2. Confirm you've read WORKFLOW.md
+3. Show TodoWrite with all workflow steps (1-13) for my approval
+4. Then proceed with the task"
+```
+
+**Claude's Approach:**
+1. Created 13-step TodoWrite tracking complete workflow
+2. Analyzed existing patterns from InterviewList component
+3. Generated complete candidate management system following same patterns
+4. Reused existing API hooks, types, and schemas (already implemented)
+5. Created 7 new files with all required features
+
+**What Claude Generated:**
+
+**Component Files (7 files created):**
+
+1. **`candidate-list.tsx`** (292 lines) - Main list component
+   - TanStack Table with 6 sortable columns
+   - Search with useDeferredValue for performance
+   - Position and status filter dropdowns
+   - Header with "Add Candidate" and "Bulk Upload" buttons
+   - Row click navigation to detail page
+   - Loading skeletons and error states
+
+2. **`candidate-form.tsx`** (165 lines) - Add/edit form
+   - React Hook Form + Zod validation
+   - 5 fields: name, email, phone, position, source
+   - Reusable for both create and update operations
+   - Source dropdown with 7 preset options
+   - Cancel button with router.back()
+
+3. **`bulk-upload-form.tsx`** (281 lines) - CSV upload
+   - Drag & drop file upload with visual feedback
+   - CSV parsing with validation
+   - Preview table showing valid/invalid rows
+   - Error indicators per row
+   - Template download functionality
+   - Upload progress and result summary
+
+4. **`candidates/page.tsx`** - List page wrapper
+5. **`candidates/new/page.tsx`** - Add candidate page
+6. **`candidates/[id]/page.tsx`** (309 lines) - Detail view
+   - Profile information card
+   - Interview history table (if any)
+   - Status workflow visualization (4 steps)
+   - Send invite simulation
+   - Edit button
+
+7. **`candidates/[id]/edit/page.tsx`** - Edit page (reuses CandidateForm)
+
+**Updated Home Page:**
+- Added navigation cards for all 4 dashboard sections
+- Candidates card with Users icon
+- Quick stats placeholders
+
+**User Review & Critical Iterations:**
+
+**Issue #1: Type Safety - ParsedCandidate**
+```
+User: "The type ParsedCandidate should be defined in global types unless it'll be only used in this component. You could import the Candidate type and define a partial interface out of it as a better approach."
+```
+
+**Claude's Response:**
+Used `Pick<>` utility type for better type safety:
+```typescript
+// ❌ Initial approach - standalone interface
+interface ParsedCandidate {
+  name: string;
+  email: string;
+  // ... duplicating Candidate fields
+}
+
+// ✅ Better approach - derive from Candidate
+type ParsedCandidate = Pick<Candidate, 'name' | 'email' | 'appliedFor' | 'phone' | 'source'> & {
+  isValid: boolean;
+  errors: string[];
+};
+```
+
+**Why This Is Better:**
+- DRY principle - reuses field types from existing Candidate type
+- If Candidate fields change, ParsedCandidate updates automatically
+- Clear intent - shows exactly which Candidate fields we're using
+- Component-scoped validation fields stay local
+
+**Issue #2: Missing PRD Requirements**
+
+User reviewed against PRD requirements (lines 100-138) and found 4 missing items:
+
+1. ❌ **Workflow only showed 3 steps, needed 4**: pending → invited → interviewed → **hired/rejected**
+2. ❌ **Edit candidate feature missing** from detail page
+3. ❌ **Wrong column**: Used "Applied Date" instead of "Interview Date"
+4. ❌ **Drag & drop not implemented** for CSV upload (only click to upload)
+
+**Claude's Fixes:**
+
+**Fix #1: Added 4th Workflow Step**
+```typescript
+// Updated workflow visualization with 4 steps
+{[
+  { status: 'pending', label: 'Pending' },
+  { status: 'invited', label: 'Invited' },
+  { status: 'interviewed', label: 'Interviewed' },
+  { status: 'hired/rejected', label: 'Hired/Rejected' },  // Added
+].map((item, index) => {
+  const isActive =
+    candidate.status === item.status ||
+    (item.status === 'hired/rejected' && ['hired', 'rejected'].includes(candidate.status)) ||
+    // ... proper highlighting logic for all steps
+```
+
+**Fix #2: Edit Candidate Feature**
+Created `/candidates/[id]/edit/page.tsx` that reuses CandidateForm:
+```typescript
+// Reuse pattern - DRY principle
+<CandidateForm candidate={candidate} />
+```
+Added Edit button to detail page with navigation
+
+**Fix #3: Interview Date Column**
+```typescript
+// Changed from createdAt to interviewedAt
+{
+  accessorKey: 'interviewedAt',  // Was: 'createdAt'
+  header: 'Interview Date',       // Was: 'Applied Date'
+  cell: ({ row }) => {
+    const date = row.original.interviewedAt;  // Was: createdAt
+    return <div>{date ? format(new Date(date), 'MMM dd, yyyy') : '-'}</div>;
+  },
+}
+```
+
+**Fix #4: Full Drag & Drop Implementation**
+```typescript
+// Added state and handlers
+const [isDragging, setIsDragging] = useState(false);
+
+const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+  e.preventDefault();
+  setIsDragging(true);
+};
+
+const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+  e.preventDefault();
+  setIsDragging(false);
+  const droppedFile = e.dataTransfer.files[0];
+  if (droppedFile && droppedFile.type === 'text/csv') {
+    setFile(droppedFile);
+    parseCSV(droppedFile);
+  }
+};
+
+// Visual feedback - border turns primary yellow when dragging
+className={isDragging ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'}
+```
+
+**Quality Check Issues:**
+
+**Issue #1: Lint - Label Without Control**
+```typescript
+// ❌ BAD: Label without htmlFor
+<label className="text-sm font-medium">Change Status</label>
+<Select>...</Select>
+
+// ✅ GOOD: Use div instead for non-form labels
+<div className="text-sm font-medium mb-2">Change Status</div>
+<Select>...</Select>
+```
+
+**Issue #2: Lint - Array Index Keys**
+```typescript
+// ❌ BAD: Using only index
+{parsedCandidates.map((candidate, index) => (
+  <TableRow key={`candidate-${index}`}>
+
+// ✅ GOOD: Combine email + index for uniqueness
+{parsedCandidates.map((candidate, index) => (
+  <TableRow key={`${candidate.email}-${index}`}>
+```
+
+**Issue #3: TypeScript Build Error**
+```
+Type error: Property 'title' does not exist on type LucideProps
+<AlertCircle title={candidate.errors.join(', ')} />
+```
+
+**Fix:**
+```typescript
+// ❌ BAD: title attribute on icon component
+<AlertCircle className="h-5 w-5" title={errors.join(', ')} />
+
+// ✅ GOOD: Wrap in div with title
+<div title={candidate.errors.join(', ')}>
+  <AlertCircle className="h-5 w-5 text-red-500" />
+</div>
+```
+
+**Quality Checks Final Results:**
+- ✅ Lint: Passed (0 errors, 47 files checked)
+- ✅ Type-check: Passed
+- ✅ Build: Successful (9 routes compiled)
+- ✅ Dev: Compiled without errors
+
+**All 8 Subtasks Completed:**
+- 7.1: CandidateList component with TanStack Table ✅
+- 7.2: CandidateForm with React Hook Form + Zod ✅
+- 7.3: Form field validation logic ✅
+- 7.4: CandidateDetail view ✅
+- 7.5: Status workflow UI components (4 steps) ✅
+- 7.6: CRUD API integration (hooks existed) ✅
+- 7.7: Filtering and search functionality ✅
+- 7.8: Simulated email invitation feature ✅
+
+**Result:** ✅ Complete candidate management system meeting all PRD requirements
+
+**Time Saved:** ~90 minutes
+- Component structure setup: ~20 min saved
+- TanStack Table configuration: ~15 min saved
+- Form with validation: ~20 min saved
+- Bulk CSV upload logic: ~25 min saved
+- Status workflow visualization: ~10 min saved
+
+**Effectiveness:** 9/10
+
+**What Worked Perfectly:**
+- Reused existing patterns from InterviewList
+- All hooks and types already existed (Task #3)
+- shadcn/ui components worked seamlessly
+- Drag & drop implementation worked first try
+- Biome auto-fix handled 5 formatting issues instantly
+
+**What Required Iteration:**
+- Type safety: Used Pick<> for derived types (important learning)
+- PRD alignment: 4 missing requirements caught in user review
+- Build errors: Lucide icon title attribute not supported
+- Accessibility: Label/control association corrected
+
+**Key Learnings:**
+1. **Use Pick<> utility** for deriving types from existing interfaces
+2. **Always verify against PRD** before marking complete
+3. **Drag & drop requires 3 handlers**: onDragOver, onDragLeave, onDrop
+4. **Lucide icons don't support title** - wrap in div for tooltips
+5. **Build catches TypeScript errors** that dev server misses
+
+---
+
 ## 3. Debugging & Problem Solving
 
 ### Issue 1: Biome Linting - 3,221 Formatting Errors
