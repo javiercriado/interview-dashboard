@@ -22,13 +22,21 @@ export type UpdateCandidateInput = z.infer<typeof updateCandidateSchema>;
 // Interview Template Schemas
 // ===========================
 
-export const questionSchema = z.object({
+// Base question schema for validation (allows optional followUps/isRequired with defaults)
+const questionSchemaBase = z.object({
   id: z.string().optional(),
   text: z.string().min(10, 'Question must be at least 10 characters'),
   competency: z.string().min(1, 'Competency is required'),
-  followUps: z.array(z.string()).default([]),
-  isRequired: z.boolean().default(true),
+  followUps: z.array(z.string()).optional(),
+  isRequired: z.boolean().optional(),
 });
+
+// Transform schema that provides defaults (this is what the form actually uses)
+export const questionSchema = questionSchemaBase.transform((data) => ({
+  ...data,
+  followUps: data.followUps ?? [],
+  isRequired: data.isRequired ?? true,
+}));
 
 export const createInterviewTemplateSchema = z.object({
   name: z.string().min(3, 'Template name must be at least 3 characters'),
@@ -40,9 +48,14 @@ export const createInterviewTemplateSchema = z.object({
 
 export const updateInterviewTemplateSchema = createInterviewTemplateSchema.partial();
 
-export type QuestionInput = z.infer<typeof questionSchema>;
-export type CreateInterviewTemplateInput = z.infer<typeof createInterviewTemplateSchema>;
+// Export input types (what the form uses - with optional fields)
+export type QuestionInput = z.input<typeof questionSchema>;
+export type CreateInterviewTemplateInput = z.input<typeof createInterviewTemplateSchema>;
 export type UpdateInterviewTemplateInput = z.infer<typeof updateInterviewTemplateSchema>;
+
+// Export output types (after validation/transformation - with required fields)
+export type QuestionOutput = z.output<typeof questionSchema>;
+export type CreateInterviewTemplateOutput = z.output<typeof createInterviewTemplateSchema>;
 
 // ===========================
 // Bulk Upload Schema

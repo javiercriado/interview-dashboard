@@ -378,6 +378,16 @@ export function InterviewList() {
                   data-state={row.getIsSelected() && 'selected'}
                   className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleRowClick(row.original)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleRowClick(row.original);
+                    }
+                  }}
+                  tabIndex={0}
+                  // biome-ignore lint/a11y/useSemanticElements: TableRow must be tr, role=button is correct for clickable rows
+                  role="button"
+                  aria-label={`View interview for ${row.original.candidateName}, ${row.original.jobPosition}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

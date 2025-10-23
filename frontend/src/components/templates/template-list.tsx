@@ -179,6 +179,7 @@ export function TemplateList() {
                   variant="outline"
                   size="sm"
                   onClick={() => router.push(`/templates/${template.id}/edit`)}
+                  aria-label={`Edit ${template.name}`}
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -187,6 +188,7 @@ export function TemplateList() {
                   size="sm"
                   onClick={() => handleDuplicate(template)}
                   disabled={duplicateMutation.isPending}
+                  aria-label={`Duplicate ${template.name}`}
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
@@ -195,6 +197,7 @@ export function TemplateList() {
                   size="sm"
                   onClick={() => handleDelete(template.id)}
                   disabled={deleteMutation.isPending}
+                  aria-label={`Delete ${template.name}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { IBM_Plex_Mono, Open_Sans } from 'next/font/google';
 import './globals.css';
+import { NavigationProgress } from '@/components/ui/navigation-progress';
+import { Toaster } from '@/components/ui/toaster';
 import { AppProvider } from '@/lib/context/app-context';
 import { QueryProvider } from '@/lib/providers/query-provider';
 
@@ -31,8 +33,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${ibmPlexMono.variable} ${openSans.variable} font-sans antialiased`}>
+        <NavigationProgress />
         <QueryProvider>
-          <AppProvider>{children}</AppProvider>
+          <AppProvider>
+            {children}
+            <Toaster />
+          </AppProvider>
         </QueryProvider>
       </body>
     </html>

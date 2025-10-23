@@ -133,7 +133,7 @@ let candidates = [
     email: 'javiercriado2@email.com',
     phone: '+51-926-128-494',
     appliedFor: 'Senior Frontend Engineer',
-    status: 'interviewed',
+    status: 'hired',
     invitedAt: '2025-10-21T12:00:00Z',
     interviewedAt: '2025-10-23T15:15:00Z',
     source: 'Job Board'

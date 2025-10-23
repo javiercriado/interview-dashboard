@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
 import {
   useCreateInterviewTemplate,
   useInterviewTemplate,
@@ -39,7 +40,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, GripVertical, Plus, Trash2, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 import { TemplatePreview } from './template-preview';
@@ -110,7 +111,13 @@ function SortableQuestion({
         </div>
         <div className="flex items-center gap-2">
           {fieldsLength > 1 && (
-            <Button type="button" variant="ghost" size="sm" onClick={() => onRemove(questionIndex)}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onRemove(questionIndex)}
+              aria-label={`Remove question ${questionIndex + 1}`}
+            >
               <Trash2 className="h-4 w-4" />
             </Button>
           )}
@@ -186,8 +193,9 @@ function SortableQuestion({
           </Button>
         </div>
         {watchedQuestions[questionIndex]?.followUps?.map(
-          (followUp: string, followUpIndex: number) => (
-            <div key={`${questionIndex}-${followUpIndex}-${followUp}`} className="flex gap-2">
+          (_followUp: string, followUpIndex: number) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: Index is stable, using value causes input focus loss bug
+            <div key={`q${questionIndex}-fu${followUpIndex}`} className="flex gap-2">
               <TextareaAutosize
                 {...form.register(`questions.${questionIndex}.followUps.${followUpIndex}`)}
                 placeholder="Follow-up question..."
@@ -199,6 +207,7 @@ function SortableQuestion({
                 variant="ghost"
                 size="sm"
                 onClick={() => onRemoveFollowUp(questionIndex, followUpIndex)}
+                aria-label={`Remove follow-up question ${followUpIndex + 1} from question ${questionIndex + 1}`}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -212,6 +221,7 @@ function SortableQuestion({
 
 export function TemplateForm({ templateId }: TemplateFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const isEdit = !!templateId;
   const { data: template } = useInterviewTemplate(templateId || '');
   const createMutation = useCreateInterviewTemplate();
@@ -221,33 +231,38 @@ export function TemplateForm({ templateId }: TemplateFormProps) {
 
   const form = useForm({
     resolver: zodResolver(createInterviewTemplateSchema),
-    defaultValues: template
-      ? {
-          name: template.name,
-          jobPosition: template.jobPosition,
-          duration: template.duration,
-          questions: template.questions.map((q) => ({
-            id: q.id,
-            text: q.text,
-            competency: q.competency,
-            followUps: q.followUps || [],
-            isRequired: q.isRequired ?? true,
-          })),
-          competencies: template.competencies,
-        }
-      : {
-          name: '',
-          jobPosition: '',
-          duration: 30,
-          questions: [{ id: '', text: '', competency: '', followUps: [], isRequired: true }],
-          competencies: [],
-        },
+    defaultValues: {
+      name: '',
+      jobPosition: '',
+      duration: 30,
+      questions: [{ id: '', text: '', competency: '', followUps: [], isRequired: true }],
+      competencies: [],
+    },
   });
 
   const { fields, append, remove, move } = useFieldArray({
     control: form.control,
     name: 'questions',
   });
+
+  // Reset form when template data loads
+  useEffect(() => {
+    if (template && isEdit) {
+      form.reset({
+        name: template.name,
+        jobPosition: template.jobPosition,
+        duration: template.duration,
+        questions: template.questions.map((q) => ({
+          id: q.id,
+          text: q.text,
+          competency: q.competency,
+          followUps: q.followUps || [],
+          isRequired: q.isRequired ?? true,
+        })),
+        competencies: template.competencies,
+      });
+    }
+  }, [template, isEdit, form]);
 
   const watchedQuestions = form.watch('questions');
   const watchedCompetencies = form.watch('competencies');
@@ -293,6 +308,7 @@ export function TemplateForm({ templateId }: TemplateFormProps) {
 
   const addFollowUp = (questionIndex: number) => {
     const currentFollowUps = form.getValues(`questions.${questionIndex}.followUps`) || [];
+    // Add empty string - React Hook Form will manage the index
     form.setValue(`questions.${questionIndex}.followUps`, [...currentFollowUps, '']);
   };
 
@@ -323,12 +339,40 @@ export function TemplateForm({ templateId }: TemplateFormProps) {
       updateMutation.mutate(
         { id: templateId, data: templateData },
         {
-          onSuccess: () => router.push('/templates'),
+          onSuccess: () => {
+            toast({
+              title: 'Success',
+              description: 'Template has been updated successfully',
+              variant: 'success',
+            });
+            router.push('/templates');
+          },
+          onError: () => {
+            toast({
+              title: 'Error',
+              description: 'Failed to update template. Please try again.',
+              variant: 'destructive',
+            });
+          },
         },
       );
     } else {
       createMutation.mutate(templateData, {
-        onSuccess: () => router.push('/templates'),
+        onSuccess: () => {
+          toast({
+            title: 'Success',
+            description: 'Template has been created successfully',
+            variant: 'success',
+          });
+          router.push('/templates');
+        },
+        onError: () => {
+          toast({
+            title: 'Error',
+            description: 'Failed to create template. Please try again.',
+            variant: 'destructive',
+          });
+        },
       });
     }
   };

@@ -69,7 +69,7 @@ export function TemplatePreview({ template, onClose, onEdit }: TemplatePreviewPr
                     <Badge variant="outline">{question.competency}</Badge>
                   </div>
                   <p className="text-muted-foreground mb-3">{question.text}</p>
-                  {question.followUps.length > 0 && (
+                  {question.followUps && question.followUps.length > 0 && (
                     <div className="mt-3 pl-4 border-l-2 border-muted">
                       <p className="text-sm font-medium mb-2">Follow-up questions:</p>
                       <ul className="space-y-1">

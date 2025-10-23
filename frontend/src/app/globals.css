@@ -67,3 +67,23 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
+
+/* Navigation Progress Bar Animation */
+@keyframes progress-bar {
+  0% {
+    width: 0%;
+    opacity: 1;
+  }
+  50% {
+    width: 50%;
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
+}
+
+.animate-progress-bar {
+  animation: progress-bar 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

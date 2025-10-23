@@ -991,6 +991,509 @@ interface SortableQuestionProps {
 
 ---
 
+### Task #11: Bug Fixes and Additional Features
+
+**Context:** Polish completed features with bug fixes, navigation progress bar, toast notifications, and accessibility improvements
+**Task ID:** #11 from Task Master (8 bugs fixed + bonus feature #5)
+
+**My Initial Prompt:**
+```
+"I'm working on Task #11 - Add Export and Additional Features. It's almost done:
+- ✅ Navigation progress bar implemented
+- ✅ Toast notifications working
+- 🚨 4 HIGH PRIORITY BUGS to fix:
+  1. Template follow-up input losing focus after typing one character
+  2. Toast colors need styling (success = green/yellow, failure = red/gray)
+  3. Navigation loading bar timing (appears too late)
+  4. Invalid Date error when invitedAt is null in candidate detail page"
+```
+
+**Bug Fixes Implemented:**
+
+**Bug #1: React Key Causing Input Focus Loss**
+
+**User Report:**
+```
+"In template-form.tsx the follow up question input loses focus after typing one character"
+```
+
+**Root Cause:**
+React key included the changing `followUp` value, causing component remount on every keystroke:
+```typescript
+// ❌ BAD: Key changes with value
+<div key={`${questionIndex}-${followUpIndex}-${followUp}`}>
+```
+
+**Claude's Fix:**
+```typescript
+// ✅ GOOD: Stable key without value
+<div key={`q${questionIndex}-fu${followUpIndex}`}>
+```
+
+**Why It Works:** Key remains stable, React doesn't remount the input component
+
+**Outcome:** ✅ Input maintains focus during typing
+
+---
+
+**Bug #2: Toast Success Variant Styling**
+
+**User Request:**
+"Toast notifications need proper colors - success should be green/yellow (brand), failure should be red/gray"
+
+**Claude's Implementation:**
+
+**File 1:** Updated `toast.tsx` with success variant
+```typescript
+const toastVariants = cva(
+  'group pointer-events-auto relative flex w-full items-center...',
+  {
+    variants: {
+      variant: {
+        default: 'border bg-background text-foreground',
+        success:
+          'success group border-green-500/50 bg-green-950/90 text-green-100 [&_.toast-title]:text-primary',
+        destructive:
+          'destructive group border-red-500/50 bg-red-950/90 text-red-100',
+      },
+    },
+  },
+);
+```
+
+**File 2:** Updated `candidate-form.tsx` to use success variant
+```typescript
+toast({
+  title: 'Success',
+  description: 'Candidate has been created successfully',
+  variant: 'success',  // Green background, yellow title
+});
+```
+
+**File 3:** Added success toasts to `template-form.tsx`
+```typescript
+// On create
+createMutation.mutate(templateData, {
+  onSuccess: () => {
+    toast({
+      title: 'Success',
+      description: 'Template has been created successfully',
+      variant: 'success',
+    });
+    router.push('/templates');
+  },
+  onError: () => {
+    toast({
+      title: 'Error',
+      description: 'Failed to create template. Please try again.',
+      variant: 'destructive',
+    });
+  },
+});
+```
+
+**Outcome:** ✅ Success toasts have green background with yellow (#facc15) title, error toasts are red
+
+---
+
+**Bug #3: Navigation Progress Bar Timing**
+
+**User Feedback:**
+"Navigation bar works but could be better - it should trigger on ALL navigation clicks (menu items, table rows, buttons), not just after route changes"
+
+**Enhanced Implementation - Two-Phase Animation:**
+
+**Phase 1:** Click detection starts 0→90% progress (asymptotic, never reaches 100%)
+```typescript
+useEffect(() => {
+  const handleClick = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const anchor = target.closest('a[href]');
+    const button = target.closest('button[type="button"], button:not([type])');
+    const tableRow = target.closest('tr[role="button"], tr.cursor-pointer');
+
+    if (anchor instanceof HTMLAnchorElement) {
+      // Detect internal navigation links
+      const href = anchor.getAttribute('href');
+      if (href && !href.startsWith('http') && href !== pathname) {
+        setIsNavigating(true);
+        setProgress(0);
+      }
+    } else if (button || tableRow) {
+      // Detect navigation buttons/rows by text content
+      const text = target.textContent?.toLowerCase() || '';
+      const isNavigationButton =
+        text.includes('cancel') || text.includes('back') ||
+        text.includes('add') || text.includes('create') ||
+        text.includes('edit') || text.includes('view') ||
+        tableRow !== null;
+
+      if (isNavigationButton) {
+        setIsNavigating(true);
+        setProgress(0);
+      }
+    }
+  };
+
+  document.addEventListener('click', handleClick);
+  return () => document.removeEventListener('click', handleClick);
+}, [pathname]);
+
+// Slow asymptotic progress to 90% (never completes until route changes)
+useEffect(() => {
+  if (isNavigating && progress < 90) {
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const increment = (90 - prev) * 0.1;
+        return Math.min(prev + increment, 90);
+      });
+    }, 100);
+    return () => clearInterval(interval);
+  }
+}, [isNavigating, progress]);
+```
+
+**Phase 2:** Route change completes 90→100%
+```typescript
+useEffect(() => {
+  if (isNavigating && progress >= 0) {
+    setProgress(100);
+    const timeout = setTimeout(() => {
+      setIsNavigating(false);
+      setProgress(0);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }
+}, [pathname, searchParams]);
+```
+
+**Outcome:** ✅ Progress bar triggers immediately on click, completes smoothly on route change
+
+---
+
+**Bug #4: Invalid Date Error**
+
+**User Report:**
+```typescript
+// Error in candidate detail page when invitedAt is null
+{format(new Date(candidate.invitedAt), 'MMMM dd, yyyy')}  // Throws Invalid Date
+```
+
+**Claude's Fix:**
+```typescript
+// Wrap in try-catch with fallback
+{candidate.invitedAt && (
+  <div>
+    <div className="text-sm text-muted-foreground mb-1">Invited Date</div>
+    <div className="font-medium">
+      {(() => {
+        try {
+          return format(new Date(candidate.invitedAt), 'MMMM dd, yyyy');
+        } catch {
+          return '-';
+        }
+      })()}
+    </div>
+  </div>
+)}
+```
+
+**Outcome:** ✅ No more Invalid Date errors, shows '-' for null dates
+
+---
+
+**Bug #5: Template Data Not Loading on First Navigation**
+
+**User Report:**
+"Sometimes when navigating to /templates/t2/edit, data isn't shown, but if you try again it is shown"
+
+**Root Cause:**
+Form initialized with empty defaultValues before async template data loaded from API
+
+**Claude's Solution:**
+```typescript
+// Add useEffect to reset form when template data arrives
+useEffect(() => {
+  if (template && isEdit) {
+    form.reset({
+      name: template.name,
+      jobPosition: template.jobPosition,
+      duration: template.duration,
+      questions: template.questions.map((q) => ({
+        id: q.id,
+        text: q.text,
+        competency: q.competency,
+        followUps: q.followUps || [],
+        isRequired: q.isRequired ?? true,
+      })),
+      competencies: template.competencies,
+    });
+  }
+}, [template, isEdit, form]);
+```
+
+**Outcome:** ✅ Template data reliably loads on first navigation
+
+---
+
+**Code Quality Improvements:**
+
+**Issue #1: Biome Lint - forEach Loops**
+
+**User Feedback:**
+"Do we need to use biome-ignore here? I would like to fix it properly"
+
+**Fixed in `use-toast.ts`:**
+```typescript
+// ❌ BAD: forEach flagged by Biome
+state.toasts.forEach((toast) => addToRemoveQueue(toast.id));
+
+// ✅ GOOD: for...of loop
+for (const toast of state.toasts) {
+  addToRemoveQueue(toast.id);
+}
+```
+
+**Outcome:** ✅ Proper code, no ignores needed
+
+---
+
+**Issue #2: Biome Lint - useExhaustiveDependencies**
+
+**Fixed in `use-toast.ts`:**
+```typescript
+// ❌ BAD: Unnecessary dependency
+React.useEffect(() => {
+  listeners.push(setState);
+  return () => {
+    const index = listeners.indexOf(setState);
+    if (index > -1) {
+      listeners.splice(index, 1);
+    }
+  };
+}, [state]);  // setState is stable, doesn't need state dependency
+
+// ✅ GOOD: Removed unnecessary dependency
+React.useEffect(() => {
+  listeners.push(setState);
+  return () => {
+    const index = listeners.indexOf(setState);
+    if (index > -1) {
+      listeners.splice(index, 1);
+    }
+  };
+}, []);  // setState is stable, no dependencies needed
+```
+
+**Outcome:** ✅ Correct dependency array
+
+---
+
+**Issue #3: Biome Lint - useSemanticElements (Legitimate biome-ignore)**
+
+**Biome Complaint:**
+"Elements with role='button' should be changed to <button>"
+
+**Why It's Wrong:**
+Table rows MUST be `<tr>` elements for semantic HTML - can't use `<button>`
+
+**Legitimate Use:**
+```typescript
+// biome-ignore lint/a11y/useSemanticElements: TableRow must be tr, role=button is correct for clickable rows
+<TableRow
+  role="button"
+  tabIndex={0}
+  onClick={() => handleRowClick(row.original)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleRowClick(row.original);
+    }
+  }}
+>
+```
+
+**Outcome:** ✅ Proper use of biome-ignore with explanation
+
+---
+
+**Bonus Features Implementation:**
+
+**Feature #5: Accessibility Improvements** ✅ IMPLEMENTED
+
+**User Request:**
+"I agree with you. Add basic accessibility improvements now please"
+
+**What We Implemented:**
+
+**1. ARIA Labels on Icon-Only Buttons**
+
+**File: `template-list.tsx`**
+```typescript
+<Button
+  variant="outline"
+  size="sm"
+  onClick={() => router.push(`/templates/${template.id}/edit`)}
+  aria-label={`Edit ${template.name}`}
+>
+  <Edit className="h-4 w-4" />
+</Button>
+
+<Button
+  variant="outline"
+  size="sm"
+  onClick={() => handleDuplicate(template)}
+  aria-label={`Duplicate ${template.name}`}
+>
+  <Copy className="h-4 w-4" />
+</Button>
+
+<Button
+  variant="outline"
+  size="sm"
+  onClick={() => handleDelete(template.id)}
+  aria-label={`Delete ${template.name}`}
+>
+  <Trash2 className="h-4 w-4" />
+</Button>
+```
+
+**File: `template-form.tsx`**
+```typescript
+<Button
+  type="button"
+  variant="ghost"
+  size="sm"
+  onClick={() => onRemove(questionIndex)}
+  aria-label={`Remove question ${questionIndex + 1}`}
+>
+  <Trash2 className="h-4 w-4" />
+</Button>
+
+<Button
+  type="button"
+  variant="ghost"
+  size="sm"
+  onClick={() => onRemoveFollowUp(questionIndex, followUpIndex)}
+  aria-label={`Remove follow-up question ${followUpIndex + 1} from question ${questionIndex + 1}`}
+>
+  <Trash2 className="h-4 w-4" />
+</Button>
+```
+
+**File: `toaster.tsx`**
+```typescript
+<ToastClose aria-label="Close notification" />
+```
+
+**2. Keyboard Navigation for Table Rows**
+
+**Files: `interview-list.tsx`, `candidate-list.tsx`**
+```typescript
+<TableRow
+  key={row.id}
+  className="cursor-pointer hover:bg-muted/50"
+  onClick={() => handleRowClick(row.original)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleRowClick(row.original);
+    }
+  }}
+  tabIndex={0}
+  // biome-ignore lint/a11y/useSemanticElements: TableRow must be tr, role=button is correct for clickable rows
+  role="button"
+  aria-label={`View interview for ${row.original.candidateName}, ${row.original.jobPosition}`}
+>
+```
+
+**Accessibility Features Implemented:**
+- ✅ ARIA labels on all icon-only buttons (8 buttons across 2 files)
+- ✅ Keyboard navigation with Tab key for table rows
+- ✅ Enter and Space key support for row activation
+- ✅ Screen reader support with descriptive aria-labels
+- ✅ Proper role attributes for interactive elements
+
+**Total Improvements:** 12 accessibility enhancements
+
+---
+
+**Bonus Features Decision Matrix:**
+
+**Feature #1: Additional Charts** ✅ ALREADY IMPLEMENTED
+- Analytics dashboard has 4 charts (funnel, position breakdown, recommendation distribution, metrics cards)
+- Interview detail has competency radar chart
+- No additional work needed
+
+**Feature #2: Advanced Filtering** ✅ ALREADY IMPLEMENTED
+- Date range pickers in interview list
+- Multi-select dropdowns for status and position
+- Real-time search with debouncing
+- All filters working across all list views
+
+**Feature #3: Export to PDF** ❌ SKIPPED
+**Decision:** Too complex for 6-8 hour assignment
+**Reasoning:**
+- Would require library like jsPDF or react-pdf
+- Chart rendering in PDF needs canvas manipulation
+- CSV export already implemented and sufficient
+- CSV is more practical for data analysis (Excel/Sheets import)
+- PDF generation could take 1-2 hours minimum
+
+**Feature #4: Real-time Updates (WebSockets)** ❌ SKIPPED
+**Decision:** Too complex, mock API doesn't support it
+**Reasoning:**
+- Mock Express API server doesn't have WebSocket support
+- Would need to implement Socket.io on both backend and frontend
+- Adds significant complexity to simple mock server
+- Alternative: TanStack Query's `refetchInterval` for polling
+- WebSocket implementation could take 2-3 hours
+- Not valuable for mock data demonstration
+
+**Feature #5: Accessibility** ✅ IMPLEMENTED
+**Implemented:** Basic ARIA labels, keyboard navigation, screen reader support
+**Time Investment:** ~30 minutes
+**Impact:** Makes application usable for keyboard-only users and screen readers
+
+---
+
+**Quality Checks:**
+- ✅ Lint: 0 errors (65 files checked)
+- ✅ Type-check: 0 errors
+- ✅ Build: Compiled successfully
+- ✅ Dev: Running without errors
+
+**Result:** ✅ All bugs fixed, accessibility implemented, bonus features evaluated
+
+**Time Saved:** ~60 minutes
+- Bug diagnosis and fixes: ~20 min saved
+- Two-phase navigation progress: ~15 min saved
+- Toast variant system: ~10 min saved
+- Accessibility implementation: ~15 min saved
+
+**Effectiveness:** 9/10
+
+**What Worked Perfectly:**
+- Quick identification of all bug root causes
+- Toast variant system integrated smoothly
+- Accessibility patterns applied consistently across components
+- Strategic decision-making about which bonus features to implement
+
+**What Required Iteration:**
+- Biome-ignore comments needed proper fixes (forEach, dependencies)
+- Some biome-ignore uses are legitimate (table row semantics)
+- User correctly identified code quality issues
+
+**Key Learnings:**
+1. **React keys must be stable** - including changing values causes remounts
+2. **Fix code properly** instead of using lint ignores (except legitimate cases)
+3. **Two-phase progress bars** provide better UX than binary loading states
+4. **Biome doesn't handle accessibility** - manual ARIA implementation required
+5. **Be strategic about bonus features** - focus on highest value within time constraints
+6. **Document decisions NOT to implement** features with clear reasoning
+
+---
+
 ## 4. Testing
 
 **Status:** Testing implementation will begin with Task #2

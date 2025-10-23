@@ -174,7 +174,13 @@ export default function CandidateDetailPage() {
               <div>
                 <div className="text-sm text-muted-foreground mb-1">Invited Date</div>
                 <div className="font-medium">
-                  {format(new Date(candidate.invitedAt), 'MMMM dd, yyyy')}
+                  {(() => {
+                    try {
+                      return format(new Date(candidate.invitedAt), 'MMMM dd, yyyy');
+                    } catch {
+                      return '-';
+                    }
+                  })()}
                 </div>
               </div>
             )}
@@ -183,7 +189,13 @@ export default function CandidateDetailPage() {
               <div>
                 <div className="text-sm text-muted-foreground mb-1">Interview Date</div>
                 <div className="font-medium">
-                  {format(new Date(candidate.interviewedAt), 'MMMM dd, yyyy')}
+                  {(() => {
+                    try {
+                      return format(new Date(candidate.interviewedAt), 'MMMM dd, yyyy');
+                    } catch {
+                      return '-';
+                    }
+                  })()}
                 </div>
               </div>
             )}

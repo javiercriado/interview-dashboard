@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import { useCreateCandidate, useUpdateCandidate } from '@/lib/hooks/use-candidates';
 import { type CreateCandidateInput, createCandidateSchema } from '@/lib/schemas';
 import type { Candidate } from '@/lib/types';
@@ -24,6 +25,7 @@ interface CandidateFormProps {
 
 export function CandidateForm({ candidate, onSuccess }: CandidateFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const createCandidate = useCreateCandidate();
   const updateCandidate = useUpdateCandidate();
 
@@ -50,13 +52,28 @@ export function CandidateForm({ candidate, onSuccess }: CandidateFormProps) {
     try {
       if (candidate) {
         await updateCandidate.mutateAsync({ id: candidate.id, data });
+        toast({
+          title: 'Success',
+          description: 'Candidate has been updated successfully',
+          variant: 'success',
+        });
       } else {
         await createCandidate.mutateAsync(data);
+        toast({
+          title: 'Success',
+          description: 'Candidate has been created successfully',
+          variant: 'success',
+        });
       }
       onSuccess?.();
       router.push('/candidates');
     } catch (error) {
       console.error('Failed to save candidate:', error);
+      toast({
+        title: 'Error',
+        description: `Failed to ${candidate ? 'update' : 'create'} candidate. Please try again.`,
+        variant: 'destructive',
+      });
     }
   };
 
