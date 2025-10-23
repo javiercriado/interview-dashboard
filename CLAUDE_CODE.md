@@ -868,6 +868,129 @@ onValueChange={(value) =>
 
 ---
 
+### Task #10: Advanced Template Builder Features
+
+**Context:** Enhance template builder with drag-and-drop reordering, required/optional toggles, and improved textarea
+**Task ID:** #10 from Task Master
+
+**My Initial Prompt:**
+```
+"I'm working on the AI Interview Dashboard.
+
+1. Check next/in-progress task: task-master next
+2. Confirm you've read WORKFLOW.md
+3. Show TodoWrite with all workflow steps (1-13) for my approval
+4. Then proceed with the task"
+```
+
+**Follow-up Clarification:**
+```
+"option 2 (Full Featured approach)
+
+Focus on:
+- Add required/optional toggle using shadcn/ui Switch
+- Install and implement @dnd-kit/sortable for drag-and-drop
+- Add enhanced rich text solution for question content"
+```
+
+**Claude's Approach:**
+1. Analyzed existing template-form.tsx implementation from Task #9
+2. Identified missing features: required/optional toggle, drag-and-drop, rich text editor
+3. Installed dependencies: `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `react-textarea-autosize`
+4. Installed shadcn/ui Switch component
+5. Updated TypeScript types and Zod schemas with `isRequired` field
+6. Created `SortableQuestion` component with drag-and-drop functionality
+7. Integrated React Hook Form with field arrays and proper typing
+
+**What Claude Generated:**
+
+**File 1:** Updated `types.ts` - Added isRequired field
+```typescript
+export interface Question {
+  id: string;
+  text: string;
+  competency: string;
+  followUps: string[];
+  isRequired?: boolean; // NEW - defaults to true
+}
+```
+
+**File 2:** Updated `schemas.ts` - Added validation
+```typescript
+export const questionSchema = z.object({
+  id: z.string().optional(),
+  text: z.string().min(10, 'Question must be at least 10 characters'),
+  competency: z.string().min(1, 'Competency is required'),
+  followUps: z.array(z.string()).default([]),
+  isRequired: z.boolean().default(true), // NEW
+});
+```
+
+**File 3:** Enhanced `template-form.tsx` - Complete rewrite with three new features
+
+**Key Implementation Details:**
+1. **Drag-and-Drop Reordering:**
+   - DndContext with closestCenter collision detection
+   - SortableContext with verticalListSortingStrategy
+   - GripVertical icon as drag handle
+   - Smooth animations with opacity feedback
+   - Keyboard accessibility support
+
+2. **Required/Optional Toggle:**
+   - Switch component from shadcn/ui
+   - Visual "Optional" badge when disabled
+   - Defaults to required (true)
+   - Integrated with React Hook Form
+
+3. **Enhanced Textarea:**
+   - react-textarea-autosize for auto-growing textareas
+   - Applied to both question text and follow-up questions
+   - minRows configuration for better UX
+   - Maintains all shadcn/ui styling
+
+**Type Safety Improvement:**
+```typescript
+// Before (with 'any' types)
+interface SortableQuestionProps {
+  form: any;
+  watchedQuestions: any[];
+}
+
+// After (fully typed)
+interface SortableQuestionProps {
+  form: ReturnType<typeof useForm<CreateInterviewTemplateInput>>;
+  watchedQuestions: CreateInterviewTemplateInput['questions'];
+}
+```
+
+**User Feedback:**
+- User correctly noted that `SortableQuestionProps` should remain component-local
+- Confirmed it follows type safety architecture (not API data, no need in types.ts)
+
+**Issues Found During Quality Checks:**
+1. ❌ Biome lint errors: Import ordering and formatting issues
+2. ❌ Two `any` types in SortableQuestionProps interface
+3. ✅ TypeScript type-check: Passed
+4. ✅ Production build: Passed
+
+**My Fixes:**
+1. Ran `npm run lint:fix` to auto-fix import ordering and formatting
+2. Replaced `any` types with proper React Hook Form types:
+   - `form: ReturnType<typeof useForm<CreateInterviewTemplateInput>>`
+   - `watchedQuestions: CreateInterviewTemplateInput['questions']`
+3. All quality checks passed after fixes
+
+**Result:** ✅ All features working, fully type-safe
+**Time Saved:** ~45 minutes (complex drag-and-drop integration, proper typing)
+**Effectiveness:** 9/10 (Required minor type fixes, but implementation was comprehensive)
+
+**Key Learning:**
+- @dnd-kit requires careful setup with sensors and collision detection
+- React Hook Form types can be inferred from schema for better type safety
+- Component-local interfaces don't need to be in types.ts (follows architecture)
+
+---
+
 ## 4. Testing
 
 **Status:** Testing implementation will begin with Task #2

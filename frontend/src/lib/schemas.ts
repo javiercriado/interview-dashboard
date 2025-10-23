@@ -27,6 +27,7 @@ export const questionSchema = z.object({
   text: z.string().min(10, 'Question must be at least 10 characters'),
   competency: z.string().min(1, 'Competency is required'),
   followUps: z.array(z.string()).default([]),
+  isRequired: z.boolean().default(true),
 });
 
 export const createInterviewTemplateSchema = z.object({

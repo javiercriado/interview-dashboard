@@ -35,6 +35,7 @@ export interface Question {
   text: string;
   competency: string;
   followUps: string[];
+  isRequired?: boolean;
 }
 
 export interface InterviewTemplate {

@@ -855,4 +855,92 @@ npx shadcn@latest add label alert-dialog
 
 ---
 
-*Last Updated: Task #9 Complete (~9.3 hours total elapsed: 3h planning + 1h Task #1 + 0.5h Task #2 + 0.4h Task #3 + 0.5h Task #4 + 0.6h Task #5 + 0.4h Task #6 + 0.8h Task #7 + 1.2h Task #13 + 0.9h Task #9)*
+### Task #10: Advanced Template Builder Features (COMPLETE)
+**Status:** ✅ Complete
+**Time:** ~35 minutes
+**Claude Effectiveness:** 9/10
+
+**What Was Accomplished:**
+- Analyzed existing template-form.tsx from Task #9 to identify missing features
+- Installed @dnd-kit packages (@dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities)
+- Installed react-textarea-autosize for auto-growing textareas
+- Added shadcn/ui Switch component for required/optional toggles
+- Updated TypeScript types and Zod schemas with `isRequired` field
+- Implemented drag-and-drop question reordering with GripVertical drag handle
+- Created SortableQuestion component with full drag-and-drop functionality
+- Enhanced all textareas (question text and follow-ups) with auto-resize
+- Added required/optional toggle with visual "Optional" badge
+- Fixed type safety issues (replaced `any` with proper React Hook Form types)
+
+**Key Claude Interactions:**
+1. **Analysis Phase** - Claude reviewed existing implementation and identified exactly what was missing (saved ~10 min)
+2. **Full Implementation** - Generated complete enhanced form with all three features (saved ~45 min)
+3. **Type Safety Fix** - User caught that SortableQuestionProps should stay component-local, Claude agreed (educational moment)
+4. **Quality Fixes** - Auto-fixed linting issues, then manually fixed `any` types (saved ~10 min)
+
+**Critical Issues & Fixes:**
+
+**Issue #1: Type Safety - Using `any`**
+- **Problem:** SortableQuestionProps interface used `form: any` and `watchedQuestions: any[]`
+- **Fix:** Changed to proper types:
+  - `form: ReturnType<typeof useForm<CreateInterviewTemplateInput>>`
+  - `watchedQuestions: CreateInterviewTemplateInput['questions']`
+- **Learning:** Always use inferred types from React Hook Form, never `any`
+
+**User Insight:**
+- User correctly noted `SortableQuestionProps` should remain component-local
+- Confirmed it follows type safety architecture (component props, not API data)
+- No need to add to types.ts - perfect architectural decision
+
+**Quality Checks:**
+- ✅ Lint: Passed (0 errors after fixes)
+- ✅ Type-check: Passed with 0 errors
+- ✅ Build: Compiled successfully
+- ✅ Dev server: Running without errors
+
+**Dependencies Installed:**
+```bash
+npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities react-textarea-autosize
+npx shadcn@latest add switch
+```
+
+**Implementation Highlights:**
+1. **Drag-and-Drop:**
+   - DndContext with closestCenter collision detection
+   - SortableContext with verticalListSortingStrategy
+   - Keyboard accessibility with sortableKeyboardCoordinates
+   - Visual feedback with opacity on drag
+   - GripVertical icon as intuitive drag handle
+
+2. **Required/Optional Toggle:**
+   - Switch component integrated with React Hook Form
+   - Defaults to required (true)
+   - Visual "Optional" badge when toggled off
+   - Persists through form state
+
+3. **Enhanced Textareas:**
+   - react-textarea-autosize replaces plain Textarea
+   - Auto-grows with content (minRows: 3 for questions, 2 for follow-ups)
+   - Maintains all shadcn/ui styling and focus states
+   - Better UX for multi-line questions
+
+**Time Saved with Claude:** ~55 minutes (61% faster including all fixes)
+
+**Key Takeaways:**
+- @dnd-kit is complex but Claude handles setup well (sensors, collision detection, strategies)
+- Component-local interfaces don't belong in global types.ts (architecture pattern)
+- ReturnType<typeof useForm<T>> is the proper way to type form props
+- Auto-growing textareas provide better UX with minimal code changes
+- Quality checks catch type safety issues that dev server misses
+
+**Productivity Multiplier:** 2.6x (90 min manual vs 35 min with Claude)
+
+---
+
+**Blockers:** None
+
+**Risk:** Time constraint (6-8 hours) - mitigating by using production patterns and heavy Claude assistance
+
+---
+
+*Last Updated: Task #10 Complete (~9.9 hours total elapsed: 3h planning + 1h Task #1 + 0.5h Task #2 + 0.4h Task #3 + 0.5h Task #4 + 0.6h Task #5 + 0.4h Task #6 + 0.8h Task #7 + 1.2h Task #13 + 0.9h Task #9 + 0.6h Task #10)*

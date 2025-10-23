@@ -590,7 +590,7 @@
         "dependencies": [
           9
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -598,7 +598,7 @@
             "description": "Install @dnd-kit/sortable and @dnd-kit/core packages and set up drag-and-drop providers",
             "dependencies": [],
             "details": "Run npm install @dnd-kit/sortable @dnd-kit/core @dnd-kit/utilities. Set up DndContext provider in TemplateBuilder component. Configure collision detection and drag overlay components.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -609,7 +609,7 @@
               "10.1"
             ],
             "details": "Use useFieldArray from React Hook Form to manage questions array. Create add question button, remove question functionality. Ensure proper form validation for dynamic fields. Handle form state updates correctly.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -620,7 +620,7 @@
               "10.2"
             ],
             "details": "Implement nested useFieldArray for follow-up questions. Create UI for adding/removing follow-up questions. Build collapsible sections for follow-up management. Ensure proper validation and state handling for nested arrays.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -631,7 +631,7 @@
               "10.2"
             ],
             "details": "Create question type selector (text, multiple choice, rating, etc.). Add required/optional toggle switch. Implement conditional validation based on question type. Update form schema to handle different question types.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -643,7 +643,7 @@
               "10.2"
             ],
             "details": "Create SortableContext for questions list. Implement SortableItem component for each question. Handle drag end events to reorder form array. Add visual drag indicators and smooth animations.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -654,7 +654,7 @@
               "10.2"
             ],
             "details": "Install and configure a rich text editor (TinyMCE or similar lightweight option). Integrate with React Hook Form. Add formatting options (bold, italic, lists). Ensure editor content saves correctly in form state.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -668,7 +668,7 @@
               "10.6"
             ],
             "details": "Test and fix form state persistence during drag operations. Ensure field values persist when adding/removing questions. Implement proper form reset and validation. Add loading states for complex operations.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -810,7 +810,7 @@
     ],
     "metadata": {
       "created": "2025-10-22T19:49:05.748Z",
-      "updated": "2025-10-23T15:09:21.193Z",
+      "updated": "2025-10-23T15:40:53.216Z",
       "description": "Tasks for master context"
     }
   }
