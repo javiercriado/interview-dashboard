@@ -267,7 +267,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -275,7 +275,7 @@
             "description": "Implement utility functions to calculate key analytics metrics from interview data",
             "dependencies": [],
             "details": "Create calculateMetrics utility function that takes interview data and returns total interviews, completion rate, average score, and funnel conversion rates. Implement separate functions for position breakdown aggregation and recommendation distribution counting. Add TypeScript types for metrics data structures. Handle edge cases like empty data sets or missing fields.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -286,7 +286,7 @@
               "6.1"
             ],
             "details": "Build MetricsCard component using shadcn/ui Card component with KeySingularity styling. Create grid layout that adapts to mobile screens. Display metrics with proper formatting (percentages, decimals). Add loading skeletons and error states. Include trend indicators or comparison data if available from API.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -297,7 +297,7 @@
               "6.1"
             ],
             "details": "Build FunnelChart component using Recharts FunnelChart or custom bars. Display stages: invited → started → completed with conversion percentages. Apply KeySingularity brand colors (#facc15 primary, dark theme). Make chart responsive for mobile devices. Add tooltips showing exact numbers and percentages.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -308,7 +308,7 @@
               "6.1"
             ],
             "details": "Create PositionChart component using Recharts BarChart. Aggregate interview data by appliedFor field. Use KeySingularity yellow (#facc15) for bars with dark background. Make chart responsive and handle long position names with proper truncation. Add hover tooltips with full position names and counts.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -319,7 +319,7 @@
               "6.1"
             ],
             "details": "Build RecommendationChart component using Recharts PieChart. Show distribution of recommendation field values (hire, maybe, no-hire). Use distinct colors within KeySingularity theme for each segment. Add percentage labels and legend. Include tooltips with counts and percentages. Handle empty or undefined recommendation values.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -330,7 +330,7 @@
               "6.1"
             ],
             "details": "Build RecentInterviewsList component displaying latest 5-10 interviews. Show candidate name, position, date, and score in compact format. Implement responsive design that stacks on mobile and flows horizontally on desktop. Add click navigation to interview detail view. Include loading states and empty state when no recent interviews exist.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -793,7 +793,7 @@
     ],
     "metadata": {
       "created": "2025-10-22T19:49:05.748Z",
-      "updated": "2025-10-23T01:42:11.304Z",
+      "updated": "2025-10-23T02:43:00.015Z",
       "description": "Tasks for master context"
     }
   }
