@@ -20,7 +20,7 @@ This full-stack application provides a complete interview management system with
 git clone <repository-url>
 cd interview-dashboard
 
-# Install all dependencies and start both servers
+# Install dependencies and start Next.js (includes API routes)
 npm install
 npm run dev
 ```
@@ -28,8 +28,25 @@ npm run dev
 ### Access the Application
 
 - **Live Demo**: https://interview-dashboard-buni.vercel.app/ 🚀
-- **Frontend (Local)**: http://localhost:3000
-- **API (Local)**: http://localhost:3001
+- **Local Development**: http://localhost:3000
+
+### API Implementation
+
+This project supports **two backend options**:
+
+**Option 1: Next.js API Routes (Default)** ⭐
+- Built-in serverless functions in `frontend/src/app/api/`
+- No separate server needed
+- Works seamlessly on Vercel deployment
+- Runs at http://localhost:3000/api/*
+
+**Option 2: Express Mock Server (Optional)**
+- Standalone Express.js server in `api/`
+- Runs on port 3001
+- Useful for testing separate backend scenarios
+- Runs at http://localhost:3001/api/*
+
+Both use the same mock data structure. To switch between them, set the `NEXT_PUBLIC_API_URL` environment variable.
 
 ## 🛠️ Tech Stack
 
@@ -46,8 +63,8 @@ npm run dev
 - **Testing**: Vitest + Testing Library
 
 ### Backend
-- **Mock API**: Express.js server
-- **Data**: In-memory mock data
+- **API**: Next.js API Routes (serverless functions)
+- **Data**: In-memory mock data (shared across API routes)
 
 ### Development Tools
 - **Linting/Formatting**: Biome
@@ -149,12 +166,17 @@ cd frontend && npm run test:ui
 
 ```
 interview-dashboard/
-├── api/                          # Mock API server
+├── api/                          # Express mock server (optional)
 │   ├── server.js                 # Express server with endpoints
 │   └── package.json
 ├── frontend/                     # Next.js application
 │   ├── src/
-│   │   ├── app/                  # App Router pages
+│   │   ├── app/
+│   │   │   ├── api/              # Next.js API routes (serverless) ⭐
+│   │   │   │   ├── interviews/   # Interview endpoints
+│   │   │   │   ├── candidates/   # Candidate endpoints
+│   │   │   │   ├── interview-templates/  # Template endpoints
+│   │   │   │   └── analytics/    # Analytics endpoint
 │   │   │   ├── page.tsx          # Dashboard/Analytics
 │   │   │   ├── interviews/       # Interview pages
 │   │   │   ├── candidates/       # Candidate pages
@@ -169,6 +191,7 @@ interview-dashboard/
 │   │   │   ├── api.ts            # API client functions
 │   │   │   ├── types.ts          # TypeScript types
 │   │   │   ├── schemas.ts        # Zod validation schemas
+│   │   │   ├── mock-data.ts      # Shared mock data for API routes
 │   │   │   └── hooks/            # TanStack Query hooks
 │   │   └── test/                 # Test utilities
 │   ├── public/                   # Static assets
@@ -200,7 +223,7 @@ interview-dashboard/
 
 ### Root Level (Recommended)
 ```bash
-npm run dev           # Run both API and frontend concurrently ⭐
+npm run dev           # Start Next.js dev server (uses built-in API routes) ⭐
 npm test              # Run all tests
 npm run test:coverage # Run tests with coverage report
 npm run lint          # Run Biome linter
@@ -211,7 +234,7 @@ npm run build         # Production build
 ### Frontend Only
 ```bash
 cd frontend
-npm run dev           # Start development server only
+npm run dev           # Start development server (port 3000)
 npm run build         # Production build
 npm run start         # Start production server
 npm run lint          # Run Biome linter
@@ -222,10 +245,15 @@ npm run test:coverage # Run tests with coverage
 npm run test:ui       # Run tests with UI
 ```
 
-### API Only
+### Express API (Optional)
 ```bash
 cd api
-npm start             # Start mock API server (port 3001)
+npm install           # Install Express API dependencies
+npm start             # Start Express server (port 3001)
+
+# To use Express API instead of Next.js routes:
+# In frontend directory, create .env.local with:
+# NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
 ## ⚠️ Known Limitations

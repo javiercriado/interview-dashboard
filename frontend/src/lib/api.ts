@@ -8,7 +8,9 @@ import type {
   InterviewTemplate,
 } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// Use NEXT_PUBLIC_API_URL if set, otherwise use relative URLs (for Vercel deployment)
+// In development without env var, falls back to empty string which uses Next.js API routes
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 // Helper function to build query string
 function buildQueryString(params: Record<string, unknown>): string {
