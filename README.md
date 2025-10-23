@@ -27,8 +27,9 @@ npm run dev
 
 ### Access the Application
 
-- **Frontend**: http://localhost:3000
-- **API**: http://localhost:3001
+- **Live Demo**: https://interview-dashboard-buni.vercel.app/ 🚀
+- **Frontend (Local)**: http://localhost:3000
+- **API (Local)**: http://localhost:3001
 
 ## 🛠️ Tech Stack
 
