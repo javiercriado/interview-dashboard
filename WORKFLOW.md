@@ -56,6 +56,11 @@ task-master set-status --id=<id> --status=in-progress
 - **Component Usage**: ALWAYS use shadcn/ui components when available
   - Don't create custom components unless absolutely necessary
   - Install shadcn components with `npx shadcn@latest add [component]`
+- **Type Safety**: ALWAYS import and use types from `frontend/src/lib/types.ts`
+  - Use `Interview['status']` instead of `typeof interview.status`
+  - Use `Candidate['status']` instead of inline type assertions
+  - Reference `frontend/src/components/interviews/interview-list.tsx` for examples
+  - See CLAUDE.md "Type Safety Architecture" section for patterns
 - Ask Claude for implementation
 - Reference PRD for exact requirements
 

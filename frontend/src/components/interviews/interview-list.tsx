@@ -299,13 +299,15 @@ export function InterviewList() {
           <TableBody>
             {isLoading ? (
               // Loading skeleton
-              Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={`skeleton-${i}`}>
-                  {Array.from({ length: columns.length }).map((_, j) => (
-                    <TableCell key={`skeleton-${i}-${j}`}>
-                      <Skeleton className="h-6 w-full" />
-                    </TableCell>
-                  ))}
+              Array.from({ length: 5 }, (_, i) => `skeleton-row-${i}`).map((rowKey, i) => (
+                <TableRow key={rowKey}>
+                  {Array.from({ length: columns.length }, (_, j) => `skeleton-cell-${i}-${j}`).map(
+                    (cellKey) => (
+                      <TableCell key={cellKey}>
+                        <Skeleton className="h-6 w-full" />
+                      </TableCell>
+                    ),
+                  )}
                 </TableRow>
               ))
             ) : table.getRowModel().rows?.length ? (
