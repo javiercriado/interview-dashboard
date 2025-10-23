@@ -341,6 +341,26 @@ app.post('/api/interview-templates', (req, res) => {
   res.status(201).json(newTemplate);
 });
 
+app.patch('/api/interview-templates/:id', (req, res) => {
+  const index = interviewTemplates.findIndex(t => t.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'Template not found' });
+
+  interviewTemplates[index] = {
+    ...interviewTemplates[index],
+    ...req.body,
+    id: req.params.id // Preserve ID
+  };
+  res.json(interviewTemplates[index]);
+});
+
+app.delete('/api/interview-templates/:id', (req, res) => {
+  const index = interviewTemplates.findIndex(t => t.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'Template not found' });
+
+  interviewTemplates.splice(index, 1);
+  res.status(204).send();
+});
+
 app.get('/api/analytics', (req, res) => {
   const total = interviews.length;
   const completed = interviews.filter(i => i.status === 'completed').length;

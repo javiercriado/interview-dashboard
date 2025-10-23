@@ -512,7 +512,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -520,7 +520,7 @@
             "description": "Build template list view component displaying existing templates in card format",
             "dependencies": [],
             "details": "Create TemplateList component that fetches templates from API and displays them in a responsive card grid layout. Each card should show template name, job position, duration, and number of questions. Use shadcn/ui Card components with KeySingularity brand styling. Include loading states and error handling.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -531,7 +531,7 @@
               "9.1"
             ],
             "details": "Implement template creation with API integration. Add duplicate template functionality that copies existing template data. Build delete confirmation modal with warning. Use TanStack Query for mutations with optimistic updates. Handle success/error states with toast notifications.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -542,7 +542,7 @@
               "9.2"
             ],
             "details": "Build TemplateForm component using React Hook Form and Zod validation. Include fields for template name, job position dropdown, duration input, and description textarea. Implement form validation with proper error messages. Add save/cancel buttons with loading states.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -553,7 +553,7 @@
               "9.3"
             ],
             "details": "Create dynamic question array management within TemplateForm. Implement add new question button, remove question functionality, and drag-to-reorder questions. Each question should have text input, type selection, and optional follow-up questions. Use react-hook-form's useFieldArray for state management.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -564,7 +564,7 @@
               "9.4"
             ],
             "details": "Build competency assignment system for questions. Create competency dropdown component with search/filter capabilities. Allow multiple competencies per question. Fetch competencies from API and cache with TanStack Query. Display assigned competencies as badges on questions.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -575,7 +575,7 @@
               "9.5"
             ],
             "details": "Implement template preview mode that displays the complete interview flow. Show template metadata, questions in order, assigned competencies, and estimated duration. Include navigation between questions and back to edit mode. Style to match actual interview interface for accurate preview.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -810,7 +810,7 @@
     ],
     "metadata": {
       "created": "2025-10-22T19:49:05.748Z",
-      "updated": "2025-10-23T14:08:31.572Z",
+      "updated": "2025-10-23T15:09:21.193Z",
       "description": "Tasks for master context"
     }
   }

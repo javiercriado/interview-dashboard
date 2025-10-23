@@ -118,6 +118,26 @@ export async function createInterviewTemplate(
   return response.json();
 }
 
+export async function updateInterviewTemplate(
+  id: string,
+  data: Partial<InterviewTemplate>,
+): Promise<InterviewTemplate> {
+  const response = await fetch(`${API_BASE_URL}/api/interview-templates/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error('Failed to update template');
+  return response.json();
+}
+
+export async function deleteInterviewTemplate(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/interview-templates/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) throw new Error('Failed to delete template');
+}
+
 // Analytics API
 export async function getAnalytics(): Promise<Analytics> {
   const response = await fetch(`${API_BASE_URL}/api/analytics`);
