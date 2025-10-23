@@ -116,12 +116,29 @@ task-master set-status --id=<id> --status=completed
 - Note key decisions made
 - Summarize Claude Code effectiveness
 
-### Step 12: Commit
+### Step 12: Commit and Push to GitHub
 ```bash
+# Stage all changes
 git add .
+
+# Create commit with conventional format
 git commit -m "feat: [feature name]"
+
+# Push to GitHub
+git push
 ```
-- Use conventional commit format
+
+**Commit Message Format:**
+- Use conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `test:`
+- Include detailed description with key changes
+- Add Claude Code attribution footer:
+```
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+**Important:** Always push to GitHub after committing to keep remote in sync
 
 ### Step 13: Loop
 ```
@@ -207,6 +224,7 @@ npm run test        # Run tests (if any)
 # Git
 git add .
 git commit -m "feat: description"
+git push
 git status
 git log --oneline
 
@@ -258,8 +276,9 @@ chore: deploy to Vercel
 - [ ] CLAUDE_CODE.md updated
 - [ ] Quality checks passed (lint, type-check, build)
 - [ ] DEVELOPMENT.md summary updated
-- [ ] Code committed
-- [ ] Task marked completed
+- [ ] Code committed with conventional format
+- [ ] Code pushed to GitHub remote
+- [ ] Task marked completed in Task Master
 
 ### Before Final Submission
 - [ ] All features functional per requirements

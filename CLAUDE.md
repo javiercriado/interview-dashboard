@@ -275,7 +275,7 @@ npm run type-check    # TypeScript check
 ```bash
 task-master next              # Get next task
 task-master list              # View all tasks
-task-master set-status --id=<id> --status=in_progress
+task-master set-status --id=<id> --status=in-progress
 task-master set-status --id=<id> --status=completed
 ```
 
@@ -409,6 +409,238 @@ const columns: ColumnDef<Interview>[] = [
   // ... more columns
 ];
 ```
+
+## 🔒 Type Safety Architecture
+
+### Philosophy
+
+We follow a clear separation between validation and data representation:
+
+- **TypeScript types** (`types.ts`) - Single source of truth for API data structures
+- **Zod schemas** (`schemas.ts`) - User input validation only (forms, CSV uploads)
+- **No runtime validation** of trusted API responses
+- **Type-safe API client** - All endpoints return properly typed data
+
+### File Organization
+
+```
+frontend/src/lib/
+├── types.ts          # API data types (Interview, Candidate, etc.)
+├── schemas.ts        # Zod validation schemas (forms only)
+├── api.ts            # Typed API client functions
+└── hooks/            # TanStack Query hooks with proper types
+    ├── use-interviews.ts
+    ├── use-candidates.ts
+    ├── use-templates.ts
+    └── use-analytics.ts
+```
+
+### When to Use Zod vs TypeScript Types
+
+#### ✅ Use Zod Schemas (Runtime Validation)
+- **Form validation** (React Hook Form)
+- **CSV bulk uploads** (user-provided data)
+- **URL parameters** and query strings
+- **Any untrusted user input**
+
+```typescript
+// Example: Form validation
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createCandidateSchema } from '@/lib/schemas';
+
+const form = useForm({
+  resolver: zodResolver(createCandidateSchema),
+});
+
+const onSubmit = (data: CreateCandidateInput) => {
+  // Data is validated by Zod before reaching here
+  createCandidate.mutate(data);
+};
+```
+
+#### ✅ Use TypeScript Types (Compile-Time Safety)
+- **API responses** (we control both frontend and API)
+- **Component props** and state
+- **Hook return values**
+- **Internal data transformations**
+
+```typescript
+// Example: Typed API responses
+import type { Interview } from '@/lib/types';
+
+const { data, isLoading } = useInterviews({ status: 'completed' });
+// data is typed as Interview[] - no runtime validation needed
+```
+
+### Type Safety Patterns
+
+#### Pattern 1: Form Input → API Call
+
+```typescript
+// 1. Define Zod schema for validation
+const schema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+});
+
+// 2. Infer TypeScript type from schema
+type FormInput = z.infer<typeof schema>;
+
+// 3. Use in React Hook Form
+const form = useForm<FormInput>({
+  resolver: zodResolver(schema),
+});
+
+// 4. Submit validated data
+const onSubmit = (data: FormInput) => {
+  createCandidate.mutate(data); // Type-safe mutation
+};
+```
+
+#### Pattern 2: API Response → UI Display
+
+```typescript
+// 1. API returns typed data (no validation)
+const { data: interviews } = useInterviews();
+// Type: Interview[] | undefined
+
+// 2. Use with TypeScript safety
+interviews?.map((interview: Interview) => (
+  <InterviewRow
+    key={interview.id}
+    candidateName={interview.candidateName}
+    score={interview.score}
+    // All fields are type-checked
+  />
+));
+```
+
+#### Pattern 3: Filter Objects
+
+```typescript
+// Filters use TypeScript types (optional fields)
+const [filters, setFilters] = useState<InterviewFilters>({
+  status: undefined,
+  jobPosition: undefined,
+  search: '',
+});
+
+// API client handles undefined values
+const { data } = useInterviews(filters);
+```
+
+### Anti-Patterns to Avoid
+
+#### ❌ Don't Validate Trusted API Responses
+
+```typescript
+// BAD: Unnecessary validation overhead
+const response = await getInterviews();
+const validated = interviewArraySchema.parse(response); // Overkill!
+```
+
+#### ❌ Don't Duplicate Types in Zod
+
+```typescript
+// BAD: Duplicates types.ts
+const candidateSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  createdAt: z.date(),
+  // ... duplicating everything from Candidate type
+});
+```
+
+#### ✅ GOOD: Separate Concerns
+
+```typescript
+// types.ts - Complete data structure
+export interface Candidate {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  // ... all fields
+}
+
+// schemas.ts - Only user-provided fields
+export const createCandidateSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  // No id, createdAt - backend generates these
+});
+```
+
+### Benefits of This Approach
+
+- ✅ **No duplication** - Types defined once in `types.ts`
+- ✅ **Performance** - No unnecessary runtime validation
+- ✅ **Type safety** - Full TypeScript checking across the app
+- ✅ **Clear separation** - Validation vs data representation
+- ✅ **Maintainability** - Single source of truth for data structures
+
+### Adding New Data Types
+
+When adding a new API endpoint:
+
+1. **Add TypeScript type** to `types.ts`
+   ```typescript
+   export interface NewEntity {
+     id: string;
+     // ... fields
+   }
+   ```
+
+2. **Add Zod schema** to `schemas.ts` (if there's a form)
+   ```typescript
+   export const createNewEntitySchema = z.object({
+     // Only user-provided fields
+   });
+   ```
+
+3. **Add API function** to `api.ts`
+   ```typescript
+   export async function getNewEntities(): Promise<NewEntity[]> {
+     // Typed response
+   }
+   ```
+
+4. **Create custom hook** in `hooks/`
+   ```typescript
+   export function useNewEntities() {
+     return useQuery({
+       queryKey: ['new-entities'],
+       queryFn: getNewEntities,
+     });
+   }
+   ```
+
+### Type Safety in Forms
+
+All forms use React Hook Form + Zod resolver:
+
+```typescript
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createCandidateSchema, type CreateCandidateInput } from '@/lib/schemas';
+
+const form = useForm<CreateCandidateInput>({
+  resolver: zodResolver(createCandidateSchema),
+  defaultValues: {
+    name: '',
+    email: '',
+    appliedFor: '',
+    source: 'Direct',
+  },
+});
+```
+
+**Key points:**
+- Use Zod schema for validation
+- Infer TypeScript type with `z.infer<>`
+- React Hook Form provides type-safe field access
+- Validation happens before submission
 
 ## 🎯 Quality Checklist
 
