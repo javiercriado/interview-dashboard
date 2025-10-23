@@ -363,6 +363,35 @@ Per `docs/requirements/technical-task-requirements.md`:
 
 ## 🔧 Implementation Patterns
 
+### Component Pattern
+```typescript
+// ALWAYS use shadcn/ui components when available
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
+
+// DON'T create custom components unless absolutely necessary
+// ❌ BAD: Custom implementation
+const CustomButton = ({ children, ...props }) => {
+  return <button className="custom-styles" {...props}>{children}</button>
+};
+
+// ✅ GOOD: Use shadcn/ui component
+<Button variant="outline" size="sm">Click me</Button>
+```
+
+**Why use shadcn/ui components:**
+- Pre-built and tested
+- Consistent design system
+- Accessibility built-in
+- Saves development time
+- Matches KeySingularity branding when configured
+
+**When custom components are acceptable:**
+- No shadcn/ui equivalent exists
+- Highly specialized business logic
+- Composite components that combine multiple shadcn/ui components
+
 ### API Integration Pattern
 ```typescript
 // Use TanStack Query for all API calls

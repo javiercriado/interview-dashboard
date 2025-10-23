@@ -889,3 +889,109 @@ Added 6 packages:
 **Effectiveness:** 10/10 (perfect implementation, caught TypeScript error early)
 
 ---
+
+## 13. Task #4: Implement Interview List View with Filtering
+
+**Context:** Creating interview dashboard with TanStack Table, filters, search, and navigation to detail view.
+
+**Task ID:** Task Master #4 (Complexity: 6/10)
+
+### Initial Implementation
+
+**Dependencies Installed:**
+```bash
+npm install @tanstack/react-table date-fns
+npx shadcn@latest add skeleton calendar popover
+```
+
+**Files Created:**
+1. **components/interviews/interview-list.tsx** - Main list component
+2. **app/interviews/page.tsx** - Interview page route
+3. **app/interviews/layout.tsx** - Layout wrapper
+
+### Critical Feedback & Corrections
+
+**Issue #1: Using type assertions instead of proper types**
+
+**User Feedback:**
+```
+"good implementation but I see a few lines like this one 'const date = row.getValue('completedAt') as string;' where you're using 'as'. we have all the types defined in frontend/src/lib/types.ts"
+```
+
+**My Fix:** Changed all `row.getValue()` to `row.original` to access typed data directly:
+```typescript
+// BAD: Using type assertion
+const date = row.getValue('completedAt') as string;
+
+// GOOD: Using typed original data
+const date = row.original.completedAt;
+```
+
+**Issue #2: Not using shadcn/ui components**
+
+**User Feedback:**
+```
+"isn't there already a shadcn calendar component? why are we creating a custom one? in CLAUDE.md and WORKFLOW.md is specified to always use Shadcn components"
+```
+
+**My Response:** I initially tried to create a custom Calendar component instead of using the shadcn/ui one. Corrected by installing the official shadcn/ui calendar component.
+
+**Documentation Update:** Added "Component Pattern" section to CLAUDE.md under Implementation Patterns to emphasize always using shadcn/ui components.
+
+**Issue #3: Select component empty string error**
+
+**Runtime Error:**
+```
+Error: A <Select.Item /> must have a value prop that is not an empty string.
+```
+
+**Fix Applied:** Changed empty string values to "all":
+```typescript
+// BAD: Empty string not allowed
+<SelectItem value="">All positions</SelectItem>
+
+// GOOD: Use "all" as special value
+<SelectItem value="all">All positions</SelectItem>
+```
+
+### Features Implemented
+
+✅ **Complete Feature Set:**
+- TanStack Table with sortable columns
+- Date range picker with shadcn/ui Calendar
+- Position & Status dropdown filters
+- Debounced search using `useDeferredValue`
+- Column sorting with visual indicators
+- Row click navigation to detail view
+- Loading skeletons for async operations
+- Error states with user-friendly messages
+- Clear filters button
+- Results count display
+- Responsive design
+
+### Quality Checks Results
+
+**Linting:**
+- Auto-fixed formatting issues
+- 2 minor warnings about array index keys (acceptable for skeletons)
+
+**Type Checking:**
+- ✅ No TypeScript errors
+
+**Build:**
+- ✅ Compiled successfully (with prerender warnings - normal for data-fetching pages)
+
+### Key Learnings
+
+1. **Always use `row.original` for typed data** - Don't use `getValue()` with type assertions
+2. **Always check for existing shadcn/ui components** - Don't recreate what's available
+3. **Select components can't have empty string values** - Use special values like "all"
+4. **Document component usage patterns** - Updated CLAUDE.md and WORKFLOW.md for clarity
+
+**Result:** ✅ Interview List View fully functional with all required features
+
+**Time Investment:** ~30 minutes (including corrections)
+**Issues Encountered:** 3 (all resolved)
+**Effectiveness:** 8/10 (needed corrections but quick to fix)
+
+---

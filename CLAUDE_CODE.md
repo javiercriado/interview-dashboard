@@ -264,6 +264,82 @@ Added comprehensive type safety section to CLAUDE.md covering:
 
 ---
 
+### Task #4: Interview List View with Filtering
+
+**Context:** Implement interview dashboard with TanStack Table, filters, search, and navigation
+**Task ID:** #4 from Task Master (Complexity: 6/10)
+
+**Initial Implementation Prompt:**
+```
+"Implement InterviewList component with:
+- TanStack Table with sortable columns
+- Date range picker, position and status filters
+- Debounced search with useDeferredValue
+- Row click navigation to detail view
+- Loading skeletons and error states"
+```
+
+**What Claude Generated:**
+- Complete InterviewList component with all features
+- Calendar date range picker
+- Select dropdowns for filters
+- Debounced search implementation
+- Full TypeScript typing
+
+**Critical Issues Found by User:**
+
+**Issue #1: Type Assertions Instead of Proper Types**
+```typescript
+// ❌ BAD: What Claude initially generated
+const date = row.getValue('completedAt') as string;
+const score = row.getValue('score') as number;
+
+// ✅ GOOD: User correction - use typed original data
+const date = row.original.completedAt;
+const score = row.original.score;
+```
+
+**User Feedback:** "We have all the types defined in types.ts - shouldn't you be using defined types instead of 'as'?"
+
+**Issue #2: Creating Custom Calendar Instead of Using shadcn/ui**
+```typescript
+// ❌ BAD: Claude tried to create custom Calendar component
+function Calendar({ className, ...props }: CalendarProps) {
+  // Custom implementation
+}
+
+// ✅ GOOD: Use existing shadcn/ui component
+npx shadcn@latest add calendar
+```
+
+**User Feedback:** "Isn't there already a shadcn calendar? CLAUDE.md specifies to always use shadcn components"
+
+**Issue #3: Empty String Values in Select Components**
+```typescript
+// ❌ BAD: Empty string not allowed in SelectItem
+<SelectItem value="">All positions</SelectItem>
+
+// ✅ GOOD: Use "all" as special value
+<SelectItem value="all">All positions</SelectItem>
+```
+
+**Documentation Updates Made:**
+- Added "Component Pattern" section to CLAUDE.md Implementation Patterns
+- Updated WORKFLOW.md Step 2 to emphasize using shadcn/ui components
+
+**Result:** ✅ Working InterviewList with all features after corrections
+
+**Time Investment:** ~30 minutes (including fixes)
+**Effectiveness:** 8/10 (required corrections but quick to fix)
+
+**Key Learnings:**
+1. Always use `row.original` for typed data access in TanStack Table
+2. Check shadcn/ui library before creating any custom components
+3. Select components require non-empty string values
+4. Type safety should leverage existing type definitions, not assertions
+
+---
+
 ## 3. Debugging & Problem Solving
 
 ### Issue 1: Biome Linting - 3,221 Formatting Errors
@@ -359,6 +435,52 @@ Generated comprehensive handoff prompt with:
 
 ---
 
+### Issue 4: Select Component Empty String Error
+
+**Error Message:**
+```
+Unhandled Runtime Error
+Error: A <Select.Item /> must have a value prop that is not an empty string.
+This is because the Select value can be set to an empty string to clear the
+selection and show the placeholder.
+```
+
+**Context:**
+Task #4 - InterviewList component filters used empty strings for "All" options
+
+**My Feedback to Claude:**
+```
+"When I run npm run dev and go to http://localhost:3000/interviews I get this error:
+A <Select.Item /> must have a value prop that is not an empty string"
+```
+
+**Claude's Solution:**
+Changed empty string values to "all" as a special value:
+
+```typescript
+// Before (causing error)
+<Select value={filters.jobPosition || ''}>
+  <SelectItem value="">All positions</SelectItem>
+</Select>
+
+// After (fixed)
+<Select value={filters.jobPosition || 'all'}>
+  <SelectItem value="all">All positions</SelectItem>
+</Select>
+
+// Handler updated to handle "all" value
+onValueChange={(value) =>
+  setFilters({ ...filters, jobPosition: value === 'all' ? undefined : value })
+}
+```
+
+**Outcome:** ✅ Select components working properly
+**Time Saved:** ~5 minutes (immediate fix)
+**Effectiveness:** 10/10 (Clear error message, straightforward fix)
+**Learning:** Radix UI Select components have strict validation - no empty strings allowed
+
+---
+
 ## 4. Testing
 
 **Status:** Testing implementation will begin with Task #2
@@ -412,6 +534,66 @@ Manual setup with explicit configuration files.
 
 **Outcome:** ✅ Clean setup with no conflicts
 **Trade-off:** ~10 more minutes of setup time, but better understanding of structure
+
+---
+
+### Type Safety Pattern Review (Task #4)
+
+**Claude's Initial Approach:**
+Used type assertions (`as`) throughout TanStack Table implementation:
+```typescript
+const date = row.getValue('completedAt') as string;
+const score = row.getValue('score') as number;
+```
+
+**User's Critical Observation:**
+"We have all the types defined in types.ts - shouldn't you be using defined types?"
+
+**Why This Matters:**
+1. Type assertions bypass TypeScript's type checking
+2. We already have proper types defined
+3. `row.original` provides fully typed access
+4. Type assertions can hide potential runtime errors
+
+**Corrected Pattern:**
+```typescript
+const date = row.original.completedAt;  // Properly typed as string
+const score = row.original.score;        // Properly typed as number
+```
+
+**Documentation Impact:**
+Updated CLAUDE.md with explicit type safety patterns and anti-patterns section
+
+**Learning:** Always leverage existing type definitions rather than asserting types
+
+---
+
+### Component Strategy Review (Task #4)
+
+**Claude's Mistake:**
+Attempted to create custom Calendar component from scratch despite shadcn/ui being available
+
+**User's Critical Feedback:**
+"Isn't there already a shadcn calendar component? CLAUDE.md specifies to always use Shadcn components"
+
+**Why This Was Wrong:**
+1. Violated documented project standards
+2. Wasted time recreating existing functionality
+3. Custom component wouldn't match design system
+4. shadcn/ui components are already tested and accessible
+
+**Corrected Approach:**
+```bash
+npx shadcn@latest add calendar
+```
+
+**Documentation Updates:**
+1. Added "Component Pattern" section to CLAUDE.md Implementation Patterns
+2. Updated WORKFLOW.md Step 2 with shadcn/ui emphasis
+3. Made it explicit: "ALWAYS use shadcn/ui when available"
+
+**Impact:** Saved ~20 minutes of custom component development
+**Learning:** Check component library before building custom solutions
 
 ---
 

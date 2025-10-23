@@ -111,7 +111,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -119,7 +119,7 @@
             "description": "Install @tanstack/react-table and configure basic setup for data table functionality",
             "dependencies": [],
             "details": "Run npm install @tanstack/react-table. Create basic table configuration and import necessary types. Set up initial table structure with proper TypeScript types for Interview data model.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -130,7 +130,7 @@
               "4.1"
             ],
             "details": "Create InterviewList component using TanStack Table. Define column definitions for candidate name, position, date, score, status, and recommendation. Implement basic data fetching and table rendering with proper TypeScript interfaces.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -141,7 +141,7 @@
               "4.2"
             ],
             "details": "Create DateRangePicker component using shadcn/ui calendar components. Integrate with table filtering system to filter interviews by date range. Handle date formatting and validation properly.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -152,7 +152,7 @@
               "4.2"
             ],
             "details": "Create FilterDropdown components for position and status filtering. Use shadcn/ui Select components. Implement multi-select functionality and integrate with table filtering system. Extract unique values from data for filter options.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -163,7 +163,7 @@
               "4.2"
             ],
             "details": "Implement SearchInput component with debounced search using useDeferredValue hook. Search across candidate name, position, and other relevant fields. Integrate with table filtering system and add proper loading states during search.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -174,7 +174,7 @@
               "4.2"
             ],
             "details": "Implement column sorting using TanStack Table sorting features. Add sort indicators (arrows) to column headers. Enable multi-column sorting with proper sort state management. Include sort direction toggle functionality.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -185,7 +185,7 @@
               "4.6"
             ],
             "details": "Implement row click handlers to navigate to interview detail view using Next.js router. Add loading skeletons for table data loading. Create error states for failed data fetching. Include hover states and cursor pointer for interactive rows.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -793,7 +793,7 @@
     ],
     "metadata": {
       "created": "2025-10-22T19:49:05.748Z",
-      "updated": "2025-10-23T00:04:51.141Z",
+      "updated": "2025-10-23T01:03:33.649Z",
       "description": "Tasks for master context"
     }
   }

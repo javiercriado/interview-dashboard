@@ -39,13 +39,13 @@ Let's start!
 # Check for next or in-progress task
 task-master next
 # or if resuming
-task-master list | grep in_progress
+task-master list | grep in-progress
 ```
 
 ### Step 1: Start Task
 ```bash
-# Set task to in_progress
-task-master set-status --id=<id> --status=in_progress
+# Set task to in-progress
+task-master set-status --id=<id> --status=in-progress
 ```
 
 ### Step 2: Develop with Claude
@@ -53,6 +53,9 @@ task-master set-status --id=<id> --status=in_progress
   - Install dependencies ONLY if needed for current feature
   - Example: TanStack Table for interview list, React Hook Form for candidate forms
   - Claude will ask if new dependencies should be documented
+- **Component Usage**: ALWAYS use shadcn/ui components when available
+  - Don't create custom components unless absolutely necessary
+  - Install shadcn components with `npx shadcn@latest add [component]`
 - Ask Claude for implementation
 - Reference PRD for exact requirements
 
@@ -208,7 +211,7 @@ Then paste the prompt to continue with the next task.
 # Task Master
 task-master next
 task-master list
-task-master set-status --id=<id> --status=in_progress
+task-master set-status --id=<id> --status=in-progress
 task-master set-status --id=<id> --status=completed
 
 # Development

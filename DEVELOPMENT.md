@@ -370,9 +370,73 @@ Using Task Master AI from my ShortCat experience - this is my key differentiator
 - ✅ **Task #2: Design System & shadcn/ui** (KeySingularity branding, CSS variables, 8 UI components)
 - ✅ **Task #3: Data Layer & State Management** (TanStack Query, Zod, typed API client, custom hooks)
 
+### Task #4: Interview List View with Filtering (COMPLETE)
+**Status:** ✅ Complete
+**Time:** ~30 minutes
+**Claude Effectiveness:** 8/10
+
+**What Was Accomplished:**
+- Implemented InterviewList component with TanStack Table v8
+- Added all 6 required columns: candidate name, position, date, score, status, recommendation
+- Created date range picker using shadcn/ui Calendar component (supports multi-month selection)
+- Built position and status dropdown filters with dynamic data
+- Implemented debounced search using React's `useDeferredValue`
+- Added column sorting with visual indicators (up/down arrows)
+- Enabled row click navigation to detail view route
+- Added loading skeletons for async data fetching
+- Implemented error states with user-friendly messages
+- Created clear filters button when filters are active
+- Added results count display
+
+**Key Claude Interactions:**
+1. **Component Generation** - Created complete InterviewList with all features (saved ~20 min)
+2. **Type Safety Issues** - User caught improper type assertions, Claude fixed immediately (educational moment)
+3. **Component Library Usage** - User corrected attempt to create custom calendar (saved ~15 min)
+
+**Critical Issues & Corrections:**
+- ❌ **Type Assertions:** Used `row.getValue() as string` instead of `row.original`
+  - **User Feedback:** "We have all types defined in types.ts"
+  - **Fix:** Changed to use `row.original` for proper TypeScript typing
+  - **Learning:** Always leverage existing type definitions
+
+- ❌ **Custom Calendar Component:** Tried to create from scratch
+  - **User Feedback:** "Isn't there already a shadcn calendar?"
+  - **Fix:** Used `npx shadcn@latest add calendar`
+  - **Learning:** Always check shadcn/ui library first
+
+- ❌ **Select Empty String Error:** Used empty string for "All" option
+  - **Runtime Error:** "Select.Item must have non-empty value"
+  - **Fix:** Changed to use "all" as special value
+  - **Learning:** Radix UI components have strict validation
+
+**Documentation Updates:**
+- Added "Component Pattern" section to CLAUDE.md Implementation Patterns
+- Updated WORKFLOW.md Step 2 to emphasize using shadcn/ui components
+- Added type safety and component usage observations to CLAUDE_CODE.md
+
+**Quality Checks:**
+- ✅ Lint: Auto-fixed formatting issues
+- ✅ Type-check: Passed with 0 errors
+- ✅ Build: Compiled successfully (with expected prerender warnings)
+- ✅ Runtime: Page loads, filters work, no console errors
+
+**Dependencies Installed:**
+```bash
+npm install @tanstack/react-table date-fns
+npx shadcn@latest add skeleton calendar popover
+```
+
+**Time Saved with Claude:** ~30 minutes (50% faster despite corrections needed)
+
+**Key Takeaways:**
+- User's critical review caught important architectural issues
+- Documentation was updated to prevent similar issues in future tasks
+- Type safety patterns now explicitly documented
+- Component usage strategy clarified
+
+---
+
 **Next Steps:**
-- 🔄 Commit Task #3 and push to remote
-- ⏳ Task #4: Interview List View (table with filtering/sorting)
 - ⏳ Task #5: Interview Detail View (charts, transcript, audio player)
 - ⏳ Task #6: Analytics Dashboard
 - ⏳ Continue through remaining tasks...
@@ -383,4 +447,4 @@ Using Task Master AI from my ShortCat experience - this is my key differentiator
 
 ---
 
-*Last Updated: Task #3 Complete (~4.9 hours total elapsed: 3h planning + 1h Task #1 + 0.5h Task #2 + 0.4h Task #3)*
+*Last Updated: Task #4 Complete (~5.4 hours total elapsed: 3h planning + 1h Task #1 + 0.5h Task #2 + 0.4h Task #3 + 0.5h Task #4)*
